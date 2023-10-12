@@ -1,4 +1,4 @@
-package main
+package chtsht
 
 import (
 	"encoding/json"
@@ -14,10 +14,7 @@ type Item struct {
 	Value int    `json:"value"`
 }
 
-func main() {
-	// JSON data as a string (you can load it from a file or an HTTP request).
-	jsonData := `[{"name": "Item 1", "value": 100}, {"name": "Item 2", "value": 200}, {"name": "Item 3", "value": 300}]`
-
+func drawTable(jsonData string) {
 	// Parse JSON data into a slice of struct.
 	var items []Item
 	err := json.Unmarshal([]byte(jsonData), &items)
