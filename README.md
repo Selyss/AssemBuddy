@@ -1,5 +1,5 @@
 # chtsht
-Helpful command line tool for querying programming keywords
+Command line tool for querying programming keywords
 
 # Inspired by
 
