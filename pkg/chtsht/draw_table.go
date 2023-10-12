@@ -14,7 +14,7 @@ type Item struct {
 	Value int    `json:"value"`
 }
 
-func drawTable(jsonData string) {
+func DrawTable(jsonData string) {
 	// Parse JSON data into a slice of struct.
 	var items []Item
 	err := json.Unmarshal([]byte(jsonData), &items)
