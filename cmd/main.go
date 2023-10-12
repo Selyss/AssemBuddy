@@ -2,10 +2,24 @@ package main
 
 import (
 	"github.com/Selyss/chtsht/pkg/chtsht"
+
+	"io/ioutil"
+	"log"
+	"net/http"
 )
 
 func main() {
+	resp, err := http.Get("https://api.syscall.sh/v1/syscalls/x64")
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer resp.Body.Close()
 
-	chtsht.DrawTable(`[{"name": "Item 1", "value": 100}, {"name": "Item 2", "value": 200}, {"name": "Item 3", "value": 300}]`)
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	chtsht.DrawTable(string(body))
 
 }
