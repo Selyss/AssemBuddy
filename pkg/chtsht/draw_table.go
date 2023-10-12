@@ -37,25 +37,20 @@ func DrawTable(jsonData string) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"NR", "SYSCALL NAME", "references", "RAX", "ARG0 (rdi)", "ARG1 (rsi)", "ARG2 (rdx)", "ARG3 (r10)", "ARG4 (r8)", "ARG5 (r9)"})
 
+	table.SetHeaderAlignment(tablewriter.ALIGN_CENTER)
+	table.ClearFooter()
+	table.SetAlignment(tablewriter.ALIGN_CENTER)
+	table.SetCenterSeparator("│")
+	table.SetCenterSeparator("")
+	table.SetColumnSeparator("")
+	table.SetRowSeparator("")
+	table.SetNoWhiteSpace(true)
+
+	// Render the table.
+
 	// Iterate through the data and add rows to the table.
 	for _, item := range items {
 		table.Append([]string{fmt.Sprint(item.Nr), item.Name, item.Refs, item.Return, item.Rdi, item.Rsi, item.Rdx, item.R10, item.R8, item.R9})
 	}
-
-	// Set table properties (optional).
-	// table.SetAutoWrapText(false)
-	// table.SetAutoFormatHeaders(true)
-	table.SetHeaderAlignment(tablewriter.ALIGN_CENTER)
-	table.SetAlignment(tablewriter.ALIGN_CENTER)
-
-	// table.SetHeaderLine(true)
-	// table.SetTablePadding("\t") // pad with tabs
-	table.SetNoWhiteSpace(true)
-	table.SetCenterSeparator("│")
-	table.SetColumnSeparator("│")
-	table.SetRowSeparator("─")
-
-	// Render the table.
-
 	table.Render()
 }
