@@ -1,47 +1,74 @@
 package chtsht
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
-	"os/exec"
-	"strings"
 )
 
 type Syscall struct {
 	Name string `json:"name"`
 }
 
-func QueryASM(name string) {
-	arch := []string{"x64", "x86", "arm", "arm64"}
+func QueryASM() {
+	archs := []string{"x64", "x86", "arm", "arm64"}
 
-	selected, err := SelectFromList(languages)
+	arch, err := SelectFromList(archs)
 	if err != nil {
 		fmt.Printf("Error selecting a language: %v\n", err)
 		os.Exit(1)
 	}
 
-	var query string
-	fmt.Print("Enter Query: ")
-	_, err = fmt.Scanln(&query)
+	syscalls, err := getSyscalls(arch)
 	if err != nil {
-		fmt.Printf("Error reading input: %v\n", err)
+		fmt.Printf("Error fetching syscalls for %s: %v\n", arch, err)
+		os.Exit(1)
+
+	}
+
+	selected, err := SelectFromList(syscalls)
+	if err != nil {
+		fmt.Printf("Error selecting a syscall: %v\n", err)
 		os.Exit(1)
 	}
 
-	// TODO: put in $PAGER
-	//
-	// FIXME: do i want to make the architecture choice and then it fuzzy finds over the possible names? I think so.
+	if selected == "" {
+		fmt.Println("No syscall selected.")
 
-	// cmd := exec.Command("tmux", "neww", "bash", "-c", fmt.Sprintf("echo \"curl cht.sh/%s/%s/\" & curl cht.sh/%s/%s & while [ : ]; do sleep 1; done", selected, query, selected, query))
-
-	cmd.Stdout = os.Stdout
-
-	cmd.Stderr = os.Stderr
-	err = cmd.Run()
-	if err != nil {
-		fmt.Printf("Error running command: %v\n", err)
-		os.Exit(1)
+		os.Exit(0)
 	}
+
+	fmt.Println("Selected syscall:", selected)
+
+}
+
+func getSyscalls(arch string) ([]string, error) {
+	url := fmt.Sprintf("https://api.syscall.sh/v1/syscalls/%s", arch)
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+
+		return nil, err
+	}
+
+	var syscalls []Syscall
+
+	if err := json.Unmarshal(body, &syscalls); err != nil {
+		return nil, err
+	}
+
+	var syscallNames []string
+	for _, syscall := range syscalls {
+		syscallNames = append(syscallNames, syscall.Name)
+	}
+
+	return syscallNames, nil
 }
