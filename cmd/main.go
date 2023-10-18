@@ -20,6 +20,7 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	chtsht.DrawTable(string(body))
+  chtsht.DrawRawTable(string(body))
+     // fmt.Println(string(body))
 
 }

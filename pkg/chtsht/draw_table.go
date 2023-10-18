@@ -24,6 +24,54 @@ type Item struct {
 	R9     string `json:"arg5"`
 }
 
+func DrawRawTable(dataJSON string) {
+	var jsonData []map[string]interface{}
+	err := json.Unmarshal([]byte(dataJSON), &jsonData)
+	if err != nil {
+
+		fmt.Println("Error parsing JSON:", err)
+	}
+
+	var data [][]string
+	for _, item := range jsonData {
+		dataRow := []string{
+			fmt.Sprintf("%v", item["nr"]),
+			fmt.Sprintf("%v", item["name"]),
+			fmt.Sprintf("%v", item["return"]),
+			fmt.Sprintf("%v", item["arg0"]),
+			fmt.Sprintf("%v", item["arg1"]),
+			fmt.Sprintf("%v", item["arg2"]),
+			fmt.Sprintf("%v", item["arg3"]),
+			fmt.Sprintf("%v", item["arg4"]),
+			fmt.Sprintf("%v", item["arg5"]),
+		}
+		data = append(data, dataRow)
+	}
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"NR", "SYSCALL", "RAX", "rdi", "rsi", "rdx", "r10", "r8", "r9"})
+	table.SetAutoWrapText(true)
+	table.SetTablePadding("\t") // pad with tabs
+	table.SetNoWhiteSpace(true)
+	table.SetAutoFormatHeaders(true)
+	table.SetHeaderAlignment(0)
+	table.SetAlignment(tablewriter.ALIGN_CENTER)
+	table.SetReflowDuringAutoWrap(false)
+	table.SetBorder(false)
+
+	table.SetColumnColor(tablewriter.Colors{tablewriter.Bold, tablewriter.FgHiBlackColor},
+		tablewriter.Colors{tablewriter.Bold, tablewriter.FgHiRedColor},
+		tablewriter.Colors{tablewriter.Bold, tablewriter.FgHiBlackColor},
+		tablewriter.Colors{tablewriter.Bold, tablewriter.FgHiBlackColor},
+		tablewriter.Colors{tablewriter.Bold, tablewriter.FgHiBlackColor},
+		tablewriter.Colors{tablewriter.Bold, tablewriter.FgHiBlackColor},
+		tablewriter.Colors{tablewriter.Bold, tablewriter.FgHiBlackColor},
+		tablewriter.Colors{tablewriter.Bold, tablewriter.FgHiBlackColor},
+		tablewriter.Colors{tablewriter.Bold, tablewriter.FgBlackColor})
+
+	table.AppendBulk(data) // Add Bulk Data
+	table.Render()
+}
+
 func DrawTable(jsonData string) {
 	// Parse JSON data into a slice of struct.
 	var items []Item
@@ -49,8 +97,5 @@ func DrawTable(jsonData string) {
 	// Render the table.
 
 	// Iterate through the data and add rows to the table.
-	for _, item := range items {
-		table.Append([]string{fmt.Sprint(item.Nr), item.Name, item.Refs, item.Return, item.Rdi, item.Rsi, item.Rdx, item.R10, item.R8, item.R9})
-	}
 	table.Render()
 }
