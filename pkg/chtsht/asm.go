@@ -9,7 +9,17 @@ import (
 )
 
 type Syscall struct {
-	Name string `json:"name"`
+	Arch   string `json:"arch"`
+	Nr     int    `json:"nr"`
+	Name   string `json:"name"`
+	Refs   string `json:"refs"`
+	Return string `json:"return"`
+	Arg0   string `json:"arg0"`
+	Arg1   string `json:"arg1"`
+	Arg2   string `json:"arg2"`
+	Arg3   string `json:"arg3"`
+	Arg4   string `json:"arg4"`
+	Arg5   string `json:"arg5"`
 }
 
 func QueryASM() {
@@ -25,28 +35,40 @@ func QueryASM() {
 	if err != nil {
 		fmt.Printf("Error fetching syscalls for %s: %v\n", arch, err)
 		os.Exit(1)
-
 	}
 
-	selected, err := SelectFromList(syscalls)
+	selectedName, err := SelectFromList(syscalls)
 	if err != nil {
 		fmt.Printf("Error selecting a syscall: %v\n", err)
 		os.Exit(1)
+
 	}
 
-	if selected == "" {
+	if selectedName == "" {
+
 		fmt.Println("No syscall selected.")
-
 		os.Exit(0)
+
 	}
 
-	fmt.Println("Selected syscall:", selected)
+	selectedSyscall, err := getSyscallDetails(arch, selectedName)
+	if err != nil {
+		fmt.Printf("Error fetching syscall details: %v\n", err)
+		os.Exit(1)
+	}
 
+	syscallJSON, err := json.Marshal(selectedSyscall)
+	if err != nil {
+		fmt.Printf("Error marshaling syscall data: %v\n", err)
+		os.Exit(1)
+
+	}
+
+	DisplaySyscall(syscallJSON)
 }
 
 func getSyscalls(arch string) ([]string, error) {
 	url := fmt.Sprintf("https://api.syscall.sh/v1/syscalls/%s", arch)
-
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
@@ -71,4 +93,39 @@ func getSyscalls(arch string) ([]string, error) {
 	}
 
 	return syscallNames, nil
+}
+
+func getSyscallDetails(arch, name string) (*Syscall, error) {
+	url := fmt.Sprintf("https://api.syscall.sh/v1/syscalls/%s", arch)
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+
+	}
+
+	var syscalls []Syscall
+	if err := json.Unmarshal(body, &syscalls); err != nil {
+		return nil, err
+	}
+
+	// Find the selected syscall by name in the array
+	var selectedSyscall *Syscall
+	for _, syscall := range syscalls {
+		if syscall.Name == name {
+			selectedSyscall = &syscall
+			break
+		}
+	}
+
+	if selectedSyscall == nil {
+		return nil, fmt.Errorf("Syscall not found: %s", name)
+	}
+
+	return selectedSyscall, nil
 }
