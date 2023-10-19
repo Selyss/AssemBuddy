@@ -1,5 +1,5 @@
-github.com/hellflame/argparse v1.11.0 h1:kyGSAAdRyI8KOEemzDwZ3OO2rbNfSMEa7dbPGlTp9Dk=
-github.com/hellflame/argparse v1.11.0/go.mod h1:nOtOQAtkWh6u5msq6huJxZtjb+Yg9VeN0e7vRuBS49E=
+github.com/akamensky/argparse v1.4.0 h1:YGzvsTqCvbEZhL8zZu2AiA5nq805NZh75JNj4ajn1xc=
+github.com/akamensky/argparse v1.4.0/go.mod h1:S5kwC7IuDcEr5VeXtGPRVZ5o/FdhcMlQz4IZQuw64xA=
 github.com/mattn/go-runewidth v0.0.9/go.mod h1:H031xJmbD/WCDINGzjvQ9THkh0rPKHF+m2gUSrubnMI=
 github.com/mattn/go-runewidth v0.0.15 h1:UNAjwbU9l54TA3KzvqLGxwWjHmMgBUVhBiTjelZgg3U=
 github.com/mattn/go-runewidth v0.0.15/go.mod h1:Jdepj2loyihRzMpdS35Xk/zdY8IAYHsh153qUoGf23w=

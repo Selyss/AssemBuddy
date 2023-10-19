@@ -3,7 +3,7 @@ module github.com/Selyss/chtsht
 go 1.18
 
 require (
-	github.com/hellflame/argparse v1.11.0
+	github.com/akamensky/argparse v1.4.0
 	github.com/olekukonko/tablewriter v0.0.5
 )
 

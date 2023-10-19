@@ -1,37 +1,40 @@
 package main
 
 import (
-	"flag"
 	"fmt"
-	"log"
+	"github.com/akamensky/argparse"
+	"os"
 
-	"github.com/Selyss/chtsht/pkg/chtsht"
+	"os/exec"
+	"strings"
 )
 
 func main() {
-	// accept lang cli args
-	flag.Usage = func() {
-		fmt.Printf(`
-    Usage:
 
-        cued [OPTIONS|QUERY]
+	parser := argparse.NewParser("cued", "Tool for querying programming keywords")
+	lang := parser.String("l", "language", &argparse.Options{Required: false, Help: "Language to query"})
+	query := parser.String("q", "query", &argparse.Options{Required: false, Help: "Query"})
+	err := parser.Parse(os.Args)
 
-    Options:
-
-        QUERY                   process QUERY and exit
-
-        --help                  show this help page
-        --shell [LANG]          shell mode (open LANG if specified)
-        
-        --config [PATH]         set language option path
-
-        --standalone-install [DIR|help]
-                                install cheat.sh in the standalone mode
-                                (by default, into ~/.cheat.sh/)
-
-    `)
+	if err != nil {
+		fmt.Print(parser.Usage(err))
 	}
 
-	config, err := chtsht.NewConfig()
+	// use pager env var if possible
+	pager := os.Getenv("PAGER")
+	if pager == "" {
+		pager = "less"
+	}
 
+	if strings.Contains(*lang, *query) {
+		exec.Command(fmt.Sprintf("curl -s cht.sh/%s/%s | $PAGER", *lang, *query))
+	} else {
+		// Allow empty query search
+		if *query != "" {
+			exec.Command(fmt.Sprintf("curl -s cht.sh/%s~%s | $PAGER", *lang, *query))
+		} else {
+			exec.Command(fmt.Sprintf("curl -s cht.sh/%s | $PAGER", *lang))
+		}
+
+	}
 }
