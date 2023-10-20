@@ -29,22 +29,26 @@ func main() {
 
 	// Allow empty query search
 	if *query != "" {
-		cmd := exec.Command("curl -s cht.sh/%s/%s | $PAGER", *lang, *query)
+		url := fmt.Sprintf("cht.sh/%s/%s", *lang, *query)
+
+		cmd := exec.Command("curl", "-s", url)
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 
 		err := cmd.Run()
 		if err != nil {
-			log.Printf("Error: %v", err)
+			log.Fatal(err)
 		}
 	} else {
-		cmd := exec.Command("curl -s cht.sh/%s | $PAGER", *lang)
+		url := fmt.Sprintf("cht.sh/%s", *lang)
+
+		cmd := exec.Command("curl", "-s", url)
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 
 		err := cmd.Run()
 		if err != nil {
-			log.Printf("Error: %v", err)
+			log.Fatal(err)
 		}
 	}
 }
