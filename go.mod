@@ -1,6 +1,6 @@
 module github.com/Selyss/chtsht
 
-go 1.18
+go 1.21.3
 
 require (
 	github.com/akamensky/argparse v1.4.0

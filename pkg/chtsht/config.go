@@ -1,4 +1,4 @@
-package main
+package chtsht
 
 import (
 	"github.com/spf13/viper"

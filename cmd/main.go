@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/Selyss/chtsht/pkg/chtsht"
 	"github.com/akamensky/argparse"
 
 	"os/exec"
@@ -64,7 +65,12 @@ func main() {
 		// regular fzf
 	} else {
 		// get lang config
+		config, err := chtsht.GetConfig()
+		if err != nil {
+			log.Fatal(err)
+		}
 
+		chtsht.SelectFromList(config)
 		// if no config make a list with all options
 	}
 }
