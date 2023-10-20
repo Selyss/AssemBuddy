@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/akamensky/argparse"
+	"log"
 	"os"
 
+	"github.com/akamensky/argparse"
+
 	"os/exec"
-	"strings"
 )
 
 func main() {
@@ -26,15 +27,24 @@ func main() {
 		pager = "less"
 	}
 
-	if strings.Contains(*lang, *query) {
-		exec.Command(fmt.Sprintf("curl -s cht.sh/%s/%s | $PAGER", *lang, *query))
-	} else {
-		// Allow empty query search
-		if *query != "" {
-			exec.Command(fmt.Sprintf("curl -s cht.sh/%s~%s | $PAGER", *lang, *query))
-		} else {
-			exec.Command(fmt.Sprintf("curl -s cht.sh/%s | $PAGER", *lang))
-		}
+	// Allow empty query search
+	if *query != "" {
+		cmd := exec.Command("curl -s cht.sh/%s/%s | $PAGER", *lang, *query)
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
 
+		err := cmd.Run()
+		if err != nil {
+			log.Printf("Error: %v", err)
+		}
+	} else {
+		cmd := exec.Command("curl -s cht.sh/%s | $PAGER", *lang)
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+
+		err := cmd.Run()
+		if err != nil {
+			log.Printf("Error: %v", err)
+		}
 	}
 }
