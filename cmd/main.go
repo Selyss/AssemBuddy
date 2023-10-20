@@ -32,23 +32,41 @@ func main() {
 		url := fmt.Sprintf("cht.sh/%s/%s", *lang, *query)
 
 		cmd := exec.Command("curl", "-s", url)
-		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 
-		err := cmd.Run()
-		if err != nil {
+		lessCmd := exec.Command("less")
+		lessCmd.Stdin, _ = cmd.StdoutPipe()
+		lessCmd.Stdout = os.Stdout
+
+		if err := cmd.Start(); err != nil {
 			log.Fatal(err)
 		}
+
+		if err := lessCmd.Run(); err != nil {
+			log.Fatal(err)
+
+		}
+
+		cmd.Wait()
 	} else {
 		url := fmt.Sprintf("cht.sh/%s", *lang)
 
 		cmd := exec.Command("curl", "-s", url)
-		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 
-		err := cmd.Run()
-		if err != nil {
+		lessCmd := exec.Command("less")
+		lessCmd.Stdin, _ = cmd.StdoutPipe()
+		lessCmd.Stdout = os.Stdout
+
+		if err := cmd.Start(); err != nil {
 			log.Fatal(err)
 		}
+
+		if err := lessCmd.Run(); err != nil {
+			log.Fatal(err)
+
+		}
+
+		cmd.Wait()
 	}
 }
