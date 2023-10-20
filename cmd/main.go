@@ -33,29 +33,38 @@ func main() {
 		log.Fatal(err)
 	}
 
-	url := "cht.sh/%s"
+	// if there are args we wanna process them
+	if *topic != "" {
+		url := "cht.sh/%s"
 
-	if *query != "" {
-		url = fmt.Sprintf(url+"/%s", *topic, *query)
+		if *query != "" {
+			url = fmt.Sprintf(url+"/%s", *topic, *query)
+		} else {
+			url = fmt.Sprintf(url, *topic)
+		}
+
+		cmd := exec.Command("curl", "-s", url)
+		cmd.Stderr = os.Stderr
+
+		lessCmd := exec.Command("less")
+		lessCmd.Stdin, _ = cmd.StdoutPipe()
+		lessCmd.Stdout = os.Stdout
+
+		if err := cmd.Start(); err != nil {
+			log.Fatal(err)
+		}
+
+		if err := lessCmd.Run(); err != nil {
+			log.Fatal(err)
+
+		}
+
+		cmd.Wait()
+
+		// regular fzf
 	} else {
-		url = fmt.Sprintf(url, *topic)
+		// get lang config
+
+		// if no config make a list with all options
 	}
-
-	cmd := exec.Command("curl", "-s", url)
-	cmd.Stderr = os.Stderr
-
-	lessCmd := exec.Command("less")
-	lessCmd.Stdin, _ = cmd.StdoutPipe()
-	lessCmd.Stdout = os.Stdout
-
-	if err := cmd.Start(); err != nil {
-		log.Fatal(err)
-	}
-
-	if err := lessCmd.Run(); err != nil {
-		log.Fatal(err)
-
-	}
-
-	cmd.Wait()
 }
