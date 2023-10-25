@@ -3,7 +3,7 @@ package chtsht
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 )
@@ -28,7 +28,6 @@ func QueryASM() {
 	arch, err := SelectFromList(archs)
 	if err != nil {
 		fmt.Printf("Error selecting a language: %v\n", err)
-		os.Exit(1)
 	}
 
 	syscalls, err := getSyscalls(arch)
@@ -75,7 +74,7 @@ func getSyscalls(arch string) ([]string, error) {
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 
 		return nil, err
@@ -103,7 +102,7 @@ func getSyscallDetails(arch, name string) (*Syscall, error) {
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 

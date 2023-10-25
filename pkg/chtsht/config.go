@@ -13,19 +13,30 @@ type Config struct {
 func GetConfig() ([]string, error) {
 
 	config, err := os.UserConfigDir()
-	home, err := os.UserHomeDir()
-
-	viper.SetConfigName("cued")
-	viper.SetConfigType("yml")
-	viper.AddConfigPath(config)
-	viper.AddConfigPath(home)
-	viper.AddConfigPath(".")
-	err = viper.ReadInConfig()
-
 	if err != nil {
-		log.Fatalf("Error while reading config file %s", err)
+		log.Fatalf("Error while getting user config dir: %s", err)
+	}
+	home, err := os.UserHomeDir()
+	if err != nil {
+		log.Fatalf("Error while getting user home dir: %s", err)
 	}
 
-	return viper.GetStringSlice("topics"), nil
+	viper.SetConfigName("cued")
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath(config)
+
+  // I hope im not searching home recursively
+	viper.AddConfigPath(home)
+
+	viper.AddConfigPath(".")
+	if err := viper.ReadInConfig(); err != nil {
+    // give all opts
+		// log.Fatalf("Error reading configuration file: %s\n", err)
+    return nil, err
+	}
+
+	topics := viper.GetStringSlice("topics")
+
+	return topics, nil
 
 }
