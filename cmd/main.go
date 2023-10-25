@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/Selyss/chtsht/pkg/chtsht"
 	"github.com/akamensky/argparse"
-	"io"
 	"log"
 	"os"
 
@@ -71,7 +70,7 @@ func main() {
 			// log.Fatalf("Error while getting config: %s", err)
 			//
 			// get list of topic opts
-			readFile, err := os.Open("../chtsht.txt")
+			readFile, err := os.Open("chtsht.txt")
 
 			if err != nil {
 				fmt.Println(err)
@@ -86,11 +85,27 @@ func main() {
 
 			readFile.Close()
 
-			for _, line := range fileLines {
-				fmt.Println(line)
+			selection, err := chtsht.SelectFromList(fileLines)
+			if err != nil {
+				log.Fatalf("Error while getting fzf selection: %s", err)
+			}
+			url := fmt.Sprintf("cht.sh/%s", selection)
+			cmd := exec.Command("curl", "-s", url)
+			cmd.Stderr = os.Stderr
+
+			lessCmd := exec.Command("less")
+			lessCmd.Stdin, _ = cmd.StdoutPipe()
+			lessCmd.Stdout = os.Stdout
+
+			if err := cmd.Start(); err != nil {
+				log.Fatalf("Error while querying: %s", err)
 			}
 
-			chtsht.SelectFromList(fileLines)
+			if err := lessCmd.Run(); err != nil {
+				log.Fatalf("Error while piping into $PAGER: %s", err)
+			}
+
+			cmd.Wait()
 
 		}
 
