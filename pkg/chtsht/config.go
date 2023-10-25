@@ -8,6 +8,7 @@ import (
 
 type Config struct {
 	Topics []string
+	Color  string // TODO:
 }
 
 func GetConfig() ([]string, error) {

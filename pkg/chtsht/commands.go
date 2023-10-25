@@ -1,6 +1,8 @@
 package chtsht
 
 import (
+	tea "github.com/charmbracelet/bubbletea"
+	"log"
 	"os"
 	"os/exec"
 	"strings"
@@ -17,4 +19,24 @@ func SelectFromList(items []string) (string, error) {
 	}
 
 	return strings.TrimSpace(string(output)), nil
+}
+
+func DisplayOutput(url string) {
+	cmd := exec.Command("curl", "-s", url)
+	cmd.Stderr = os.Stderr
+
+	lessCmd := exec.Command("less")
+	lessCmd.Stdin, _ = cmd.StdoutPipe()
+	lessCmd.Stdout = os.Stdout
+
+	if err := cmd.Start(); err != nil {
+		log.Fatalf("Error while querying: %s", err)
+	}
+
+	if err := lessCmd.Run(); err != nil {
+		log.Fatalf("Error while piping into $PAGER: %s", err)
+	}
+
+	cmd.Wait()
+	return
 }

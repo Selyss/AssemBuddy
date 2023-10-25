@@ -7,8 +7,6 @@ import (
 	"github.com/akamensky/argparse"
 	"log"
 	"os"
-
-	"os/exec"
 )
 
 func main() {
@@ -44,24 +42,8 @@ func main() {
 			// TODO: if theres lang but no topic look into lua/ and lua/:learn for general lang stuff
 			url = fmt.Sprintf(url, *topic)
 		}
-
-		cmd := exec.Command("curl", "-s", url)
-		cmd.Stderr = os.Stderr
-
-		lessCmd := exec.Command("less")
-		lessCmd.Stdin, _ = cmd.StdoutPipe()
-		lessCmd.Stdout = os.Stdout
-
-		if err := cmd.Start(); err != nil {
-			log.Fatalf("Error while querying: %s", err)
-		}
-
-		if err := lessCmd.Run(); err != nil {
-			log.Fatalf("Error while piping into $PAGER: %s", err)
-		}
-
-		cmd.Wait()
-
+		chtsht.DisplayOutput(url)
+		return
 		// regular fzf
 	} else {
 		// get lang config
@@ -88,21 +70,7 @@ func main() {
 				log.Fatalf("Error while getting fzf selection: %s", err)
 			}
 			url := fmt.Sprintf("cht.sh/%s", selection)
-			cmd := exec.Command("curl", "-s", url)
-			cmd.Stderr = os.Stderr
-
-			lessCmd := exec.Command("less")
-			lessCmd.Stdin, _ = cmd.StdoutPipe()
-			lessCmd.Stdout = os.Stdout
-
-			if err := cmd.Start(); err != nil {
-				log.Fatalf("Error while querying: %s", err)
-			}
-
-			if err := lessCmd.Run(); err != nil {
-				log.Fatalf("Error while piping into $PAGER: %s", err)
-			}
-			cmd.Wait()
+			chtsht.DisplayOutput(url)
 			return
 		}
 
@@ -121,22 +89,7 @@ func main() {
 		fmt.Scanln(&query)
 
 		url := fmt.Sprintf("cht.sh/%s/%s", selection, query)
-		cmd := exec.Command("curl", "-s", url)
-		cmd.Stderr = os.Stderr
-
-		lessCmd := exec.Command("less")
-		lessCmd.Stdin, _ = cmd.StdoutPipe()
-		lessCmd.Stdout = os.Stdout
-
-		if err := cmd.Start(); err != nil {
-			log.Fatalf("Error while querying: %s", err)
-		}
-
-		if err := lessCmd.Run(); err != nil {
-			log.Fatalf("Error while piping into $PAGER: %s", err)
-		}
-
-		cmd.Wait()
-
+		chtsht.DisplayOutput(url)
+		return
 	}
 }
