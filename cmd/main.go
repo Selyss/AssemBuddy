@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"github.com/Selyss/chtsht/pkg/chtsht"
 	"github.com/akamensky/argparse"
@@ -27,53 +26,21 @@ func main() {
 		pager = "less"
 	}
 
-	// TODO: impl later
-	if *topic == "" && *query != "" {
-		log.Fatalf("Error, query but no language: %s", err)
-	}
-	// there is a topic and no query
+	// TODO: implement if theres no topic but there is a query
+	// TODO: if theres lang but no topic look into lua/ and lua/:learn for general lang stuff
 
+	// args
 	if *topic != "" {
-		url := "cht.sh/%s"
-
-		if *query != "" {
-			url = fmt.Sprintf(url+"/%s", *topic, *query)
-		} else {
-			// TODO: if theres lang but no topic look into lua/ and lua/:learn for general lang stuff
-			url = fmt.Sprintf(url, *topic)
-		}
-		chtsht.DisplayOutput(url)
+		// we got enough args to make it work
+		chtsht.DisplayOutput(fmt.Sprintf("cht.sh/%s/%s", *topic, *query))
 		return
-		// regular fzf
-	} else {
-		// get lang config
-		config, err := chtsht.GetConfig()
+	}
+
+	// check config
+	if config, err := chtsht.GetConfig(); config != nil {
 		if err != nil {
-			// get list of topic opts
-			readFile, err := os.Open("chtsht.txt")
-
-			if err != nil {
-				fmt.Println(err)
-			}
-			fileScanner := bufio.NewScanner(readFile)
-			fileScanner.Split(bufio.ScanLines)
-			var fileLines []string
-
-			for fileScanner.Scan() {
-				fileLines = append(fileLines, fileScanner.Text())
-			}
-
-			readFile.Close()
-
-			selection, err := chtsht.SelectFromList(fileLines)
-			if err != nil {
-				log.Fatalf("Error while getting fzf selection: %s", err)
-			}
-			url := fmt.Sprintf("cht.sh/%s", selection)
-			chtsht.DisplayOutput(url)
-			return
+			log.Fatalf("Error reading config, %s", err)
 		}
-
 		selection, err := chtsht.SelectFromList(config)
 		if err != nil {
 			log.Fatalf("Error while getting fzf selection: %s", err)
@@ -91,4 +58,23 @@ func main() {
 		chtsht.DisplayOutput(url)
 		return
 	}
+
+	// last resort
+	if *topic == "" && *query == "" {
+		// if theres still no topic and query
+		opts, err := chtsht.ChtReadOptions() // TODO: add asm option
+		if err != nil {
+			log.Fatalf("Error reading default option file, %s", err)
+		}
+
+		selection, err := chtsht.SelectFromList(opts)
+		if err != nil {
+			log.Fatalf("Error while getting fzf selection: %s", err)
+		}
+		chtsht.DisplayOutput(fmt.Sprintf("cht.sh/%s", selection))
+		return
+	}
+
+	chtsht.DisplayOutput(fmt.Sprintf("cht.sh/%s/%s", *topic, *query))
+	return
 }

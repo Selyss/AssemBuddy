@@ -1,6 +1,7 @@
 package chtsht
 
 import (
+	"bufio"
 	"log"
 	"os"
 	"os/exec"
@@ -38,4 +39,22 @@ func DisplayOutput(url string) {
 
 	cmd.Wait()
 	return
+}
+
+func ChtReadOptions() ([]string, error) {
+	readFile, err := os.Open("chtsht.txt") // FIXME:
+
+	if err != nil {
+		return nil, err
+	}
+	fileScanner := bufio.NewScanner(readFile)
+	fileScanner.Split(bufio.ScanLines)
+	var fileLines []string
+
+	for fileScanner.Scan() {
+		fileLines = append(fileLines, fileScanner.Text())
+	}
+
+	readFile.Close()
+	return fileLines, nil
 }
