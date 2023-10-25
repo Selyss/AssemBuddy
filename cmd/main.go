@@ -22,18 +22,17 @@ func main() {
 		return
 	}
 
-	// use pager env var if possible
 	pager := os.Getenv("PAGER")
 	if pager == "" {
-		pager = "less" // FIXME: pick a very common pager, maybe "more"
+		pager = "less"
 	}
 
 	// TODO: impl later
 	if *topic == "" && *query != "" {
 		log.Fatalf("Error, query but no language: %s", err)
 	}
+	// there is a topic and no query
 
-	// if there are args we wanna process them
 	if *topic != "" {
 		url := "cht.sh/%s"
 
