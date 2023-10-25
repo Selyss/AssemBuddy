@@ -25,18 +25,14 @@ func GetConfig() ([]string, error) {
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(config)
 
-  // I hope im not searching home recursively
+	// I hope im not searching home recursively
 	viper.AddConfigPath(home)
 
 	viper.AddConfigPath(".")
 	if err := viper.ReadInConfig(); err != nil {
-    // give all opts
-		// log.Fatalf("Error reading configuration file: %s\n", err)
-    return nil, err
+		return nil, err
 	}
 
 	topics := viper.GetStringSlice("topics")
-
 	return topics, nil
-
 }

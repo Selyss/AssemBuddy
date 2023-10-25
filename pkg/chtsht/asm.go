@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 )
@@ -27,40 +28,32 @@ func QueryASM() {
 
 	arch, err := SelectFromList(archs)
 	if err != nil {
-		fmt.Printf("Error selecting a language: %v\n", err)
+		log.Fatalf("Error selecting a language: %s", err)
 	}
 
 	syscalls, err := getSyscalls(arch)
 	if err != nil {
-		fmt.Printf("Error fetching syscalls for %s: %v\n", arch, err)
-		os.Exit(1)
+		log.Fatalf("Error fetching syscalls for %s: %s", arch, err)
 	}
 
 	selectedName, err := SelectFromList(syscalls)
 	if err != nil {
-		fmt.Printf("Error selecting a syscall: %v\n", err)
-		os.Exit(1)
-
+		log.Fatalf("Error selecting a syscall: %s", err)
 	}
 
 	if selectedName == "" {
-
 		fmt.Println("No syscall selected.")
 		os.Exit(0)
-
 	}
 
 	selectedSyscall, err := getSyscallDetails(arch, selectedName)
 	if err != nil {
-		fmt.Printf("Error fetching syscall details: %v\n", err)
-		os.Exit(1)
+		log.Fatalf("Error fetching syscall details: %s", err)
 	}
 
 	syscallJSON, err := json.Marshal(selectedSyscall)
 	if err != nil {
-		fmt.Printf("Error marshaling syscall data: %v\n", err)
-		os.Exit(1)
-
+		log.Fatalf("Error marshaling syscall data: %s", err)
 	}
 
 	DisplaySyscall(syscallJSON)
@@ -113,7 +106,6 @@ func getSyscallDetails(arch, name string) (*Syscall, error) {
 		return nil, err
 	}
 
-	// Find the selected syscall by name in the array
 	var selectedSyscall *Syscall
 	for _, syscall := range syscalls {
 		if syscall.Name == name {

@@ -26,7 +26,7 @@ func main() {
 	// use pager env var if possible
 	pager := os.Getenv("PAGER")
 	if pager == "" {
-		pager = "less"
+		pager = "less" // FIXME: pick a very common pager, maybe "more"
 	}
 
 	// TODO: impl later
@@ -64,11 +64,9 @@ func main() {
 
 		// regular fzf
 	} else {
-		// // get lang config
+		// get lang config
 		config, err := chtsht.GetConfig()
 		if err != nil {
-			// log.Fatalf("Error while getting config: %s", err)
-			//
 			// get list of topic opts
 			readFile, err := os.Open("chtsht.txt")
 
@@ -104,9 +102,8 @@ func main() {
 			if err := lessCmd.Run(); err != nil {
 				log.Fatalf("Error while piping into $PAGER: %s", err)
 			}
-
 			cmd.Wait()
-
+			return
 		}
 
 		selection, err := chtsht.SelectFromList(config)
@@ -141,6 +138,5 @@ func main() {
 
 		cmd.Wait()
 
-		// if no config make a list with all options
 	}
 }
