@@ -1,25 +1,27 @@
 package chtsht
 
 // A simple program demonstrating the spinner component from the Bubbles
+
 // component library.
 
 import (
 	"fmt"
+
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"log"
 )
 
 type errMsg error
 
 type model struct {
-	spinner  spinner.Model
+	spinner spinner.Model
+
 	quitting bool
 	err      error
 }
 
-func initialModel() model {
+func InitialModel() model {
 	s := spinner.New()
 	s.Spinner = spinner.Dot
 	s.Style = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
@@ -42,9 +44,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 	case errMsg:
-
 		m.err = msg
-
 		return m, nil
 
 	default:
@@ -61,14 +61,6 @@ func (m model) View() string {
 	str := fmt.Sprintf("\n\n   %s Loading queries...press q to quit\n\n", m.spinner.View())
 	if m.quitting {
 		return str + "\n"
-
 	}
 	return str
-}
-
-func main() {
-	p := tea.NewProgram(initialModel())
-	if _, err := p.Run(); err != nil {
-		log.Fatal(err)
-	}
 }

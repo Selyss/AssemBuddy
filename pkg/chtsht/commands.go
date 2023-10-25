@@ -1,7 +1,6 @@
 package chtsht
 
 import (
-	tea "github.com/charmbracelet/bubbletea"
 	"log"
 	"os"
 	"os/exec"

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/Selyss/chtsht/pkg/chtsht"
 	"github.com/akamensky/argparse"
+	// tea "github.com/charmbracelet/bubbletea"
 	"log"
 	"os"
 )
@@ -87,7 +88,6 @@ func main() {
 		fmt.Print("Query: ")
 		var query string
 		fmt.Scanln(&query)
-
 		url := fmt.Sprintf("cht.sh/%s/%s", selection, query)
 		chtsht.DisplayOutput(url)
 		return
