@@ -2,72 +2,19 @@ package chtsht
 
 import (
 	"bufio"
-	"fmt"
-	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
 	"log"
 	"os"
 	"os/exec"
 	"strings"
 )
 
-type errMsg error
-
-type model struct {
-	spinner  spinner.Model
-	quitting bool
-	err      error
-}
-
-func initialModel() model {
-	s := spinner.New()
-	s.Spinner = spinner.Dot
-	s.Style = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
-	return model{spinner: s}
-}
-
-func (m model) Init() tea.Cmd {
-	return m.spinner.Tick
-}
-
-func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	switch msg := msg.(type) {
-	case tea.KeyMsg:
-		switch msg.String() {
-		case "q", "esc", "ctrl+c":
-			m.quitting = true
-			return m, tea.Quit
-		default:
-			return m, nil
-		}
-
-	case errMsg:
-		m.err = msg
-		return m, nil
-
-	default:
-		var cmd tea.Cmd
-		m.spinner, cmd = m.spinner.Update(msg)
-		return m, cmd
-	}
-}
-
-func (m model) View() string {
-	if m.err != nil {
-		return m.err.Error()
-	}
-	str := fmt.Sprintf("\n   %s Loading information...press q to quit\n", m.spinner.View())
-	if m.quitting {
-		return str + "\n"
-	}
-	return str
-}
-
 func SelectFromList(items []string) (string, error) {
-
+	p := tea.NewProgram(initialModel())
+	go DisplayLoadingSpinner(p)
 	cmd := exec.Command("fzf")
 	cmd.Stdin = strings.NewReader(strings.Join(items, "\n"))
+	p.Quit()
 	cmd.Stderr = os.Stderr
 	output, err := cmd.Output()
 	if err != nil {
@@ -77,40 +24,34 @@ func SelectFromList(items []string) (string, error) {
 	return strings.TrimSpace(string(output)), nil
 }
 
+func curlOutput(url string) error {
+	cmd := exec.Command("curl", "-s", url)
+	cmd.Stdout = os.Stdout
+
+	err := cmd.Run()
+	return err
+}
+
 func DisplayOutput(url string) {
 	p := tea.NewProgram(initialModel())
+	go DisplayLoadingSpinner(p)
 
-	cmd := exec.Command("curl", "-s", url)
+	err := curlOutput(url)
+
+	p.Quit()
+	cmd := exec.Command("less")
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
-	lessCmd := exec.Command("less")
-	lessCmd.Stdin, _ = cmd.StdoutPipe()
-	lessCmd.Stdout = os.Stdout
-
-	go func() {
-		if _, err := p.Run(); err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-	}()
-	if err := cmd.Run(); err != nil {
-		log.Fatalf("Error while querying: %s", err)
-	}
-
-	go func() {
-		if err := lessCmd.Run(); err != nil {
-			log.Fatalf("Error while piping into $PAGER: %s", err)
-		}
-		p.Quit()
-	}()
-
-	if err := cmd.Run(); err != nil {
-		log.Fatalf("Error while querying: %s", err)
+	err = cmd.Run()
+	if err != nil {
+		log.Fatalf("Error running 'less': %s", err)
 	}
 }
 
 func ChtReadOptions() ([]string, error) {
-	readFile, err := os.Open("chtsht.txt") // FIXME:
+	readFile, err := os.Open("chtsht.txt") // TODO:
 
 	if err != nil {
 		return nil, err
