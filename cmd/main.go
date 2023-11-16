@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/Selyss/chtsht/pkg/chtsht"
+	"github.com/Selyss/Assembuddy/pkg/assembuddy"
 	"github.com/akamensky/argparse"
 	// tea "github.com/charmbracelet/bubbletea"
 )
@@ -32,22 +32,22 @@ func main() {
 	// args
 	if *topic != "" {
 		// we got enough args to make it work
-		chtsht.DisplayOutput(fmt.Sprintf("cht.sh/%s/%s", *topic, *query))
+		assembuddy.DisplayOutput(fmt.Sprintf("cht.sh/%s/%s", *topic, *query))
 		return
 	}
 
 	// check config
-	if config, err := chtsht.GetConfig(); config != nil {
+	if config, err := assembuddy.GetConfig(); config != nil {
 		if err != nil {
 			log.Fatalf("Error reading config, %s", err)
 		}
-		selection, err := chtsht.SelectFromList(config)
+		selection, err := assembuddy.SelectFromList(config)
 		if err != nil {
 			log.Fatalf("Error while getting fzf selection: %s", err)
 		}
 
 		if selection == "asm" {
-			chtsht.QueryASM()
+			assembuddy.QueryASM()
 			return
 		}
 
@@ -55,26 +55,26 @@ func main() {
 		var query string
 		fmt.Scanln(&query)
 		url := fmt.Sprintf("cht.sh/%s/%s", selection, query)
-		chtsht.DisplayOutput(url)
+		assembuddy.DisplayOutput(url)
 		return
 	}
 
 	// last resort
 	if *topic == "" && *query == "" {
 		// if theres still no topic and query
-		opts, err := chtsht.ChtReadOptions() // TODO: add asm option
+		opts, err := assembuddy.ChtReadOptions() // TODO: add asm option
 		if err != nil {
 			log.Fatalf("Error reading default option file, %s", err)
 		}
 
-		selection, err := chtsht.SelectFromList(opts)
+		selection, err := assembuddy.SelectFromList(opts)
 		if err != nil {
 			log.Fatalf("Error while getting fzf selection: %s", err)
 		}
-		chtsht.DisplayOutput(fmt.Sprintf("cht.sh/%s", selection))
+		assembuddy.DisplayOutput(fmt.Sprintf("cht.sh/%s", selection))
 		return
 	}
 
-	chtsht.DisplayOutput(fmt.Sprintf("cht.sh/%s/%s", *topic, *query))
+	assembuddy.DisplayOutput(fmt.Sprintf("cht.sh/%s/%s", *topic, *query))
 	return
 }
