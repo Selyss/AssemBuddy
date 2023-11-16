@@ -4,19 +4,13 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/Selyss/AssemBuddy/pkg/assembuddy"
 	"github.com/akamensky/argparse"
 	// tea "github.com/charmbracelet/bubbletea"
 )
 
-type CLIOptions struct {
-	Query            string
-	Architecture     string
-	ListQueryMatches bool
-	ListArchQueries  bool
-}
-
-func parseArgs() *CLIOptions {
-	options := &CLIOptions{}
+func parseArgs() *assembuddy.CLIOptions {
+	opts := &assembuddy.CLIOptions{}
 
 	parser := argparse.NewParser("AssemBuddy", "Tool for querying assembly keywords")
 	query := parser.String("q", "query", &argparse.Options{Help: "Search query"})
@@ -30,15 +24,15 @@ func parseArgs() *CLIOptions {
 		fmt.Print(parser.Usage(err))
 	}
 
-	options.Query = *query
-	options.Architecture = *arch
-	options.ListQueryMatches = *listQueryMatches
-	options.ListArchQueries = *listArchQueries
+	opts.Syscall = *query
+	opts.Arch = *arch
+	opts.ListQueryMatches = *listQueryMatches
+	opts.ListArchQueries = *listArchQueries
 
-	return options
+	return opts
 }
 
 func main() {
-	options := parseArgs()
-	fmt.Println(options)
+	opts := parseArgs()
+	assembuddy.QueryASM(opts)
 }

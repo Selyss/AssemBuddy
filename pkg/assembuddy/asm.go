@@ -6,7 +6,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"os"
 )
 
 type Syscall struct {
@@ -23,27 +22,25 @@ type Syscall struct {
 	Arg5   string `json:"arg5"`
 }
 
-func QueryASM() {
-	archs := []string{"x64", "x86", "arm", "arm64"}
+type CLIOptions struct {
+	Syscall          string
+	Arch             string
+	ListQueryMatches bool
+	ListArchQueries  bool
+}
 
-	arch, err := SelectFromList(archs)
-	if err != nil {
-		log.Fatalf("Error selecting a language: %s", err)
-	}
+func QueryASM(opts *CLIOptions) {
+	arch := opts.Arch
+	syscall := opts.Syscall
 
-	syscalls, err := getSyscalls(arch)
-	if err != nil {
-		log.Fatalf("Error fetching syscalls for %s: %s", arch, err)
-	}
+	var selectedName string
 
-	selectedName, err := SelectFromList(syscalls)
-	if err != nil {
-		log.Fatalf("Error selecting a syscall: %s", err)
+	if syscall != "" {
+		selectedName = syscall
 	}
 
 	if selectedName == "" {
-		fmt.Println("No syscall selected.")
-		os.Exit(0)
+		log.Fatalf("No syscall selected.")
 	}
 
 	selectedSyscall, err := getSyscallDetails(arch, selectedName)
