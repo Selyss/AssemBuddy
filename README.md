@@ -1,7 +1,6 @@
-# chtsht
-Command line tool for querying programming keywords
+# Assembuddy
+Command line tool for querying assembly information
 
-# Inspired by
-
+# Credits
 https://cht.sh/
 https://syscall.sh/
