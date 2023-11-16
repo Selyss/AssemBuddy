@@ -39,10 +39,6 @@ func QueryASM(opts *CLIOptions) {
 		selectedName = syscall
 	}
 
-	if selectedName == "" {
-		log.Fatalf("No syscall selected.")
-	}
-
 	selectedSyscall, err := getSyscallDetails(arch, selectedName)
 	if err != nil {
 		log.Fatalf("Error fetching syscall details: %s", err)

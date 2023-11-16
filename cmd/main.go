@@ -34,5 +34,6 @@ func parseArgs() *assembuddy.CLIOptions {
 
 func main() {
 	opts := parseArgs()
-	assembuddy.QueryASM(opts)
+	// assembuddy.QueryASM(opts)
+	fmt.Println(assembuddy.ListQueryMatches(opts.Syscall))
 }
