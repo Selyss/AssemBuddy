@@ -1,4 +1,4 @@
-package chtsht
+package assembuddy
 
 import (
 	"encoding/json"
@@ -69,7 +69,6 @@ func getSyscalls(arch string) ([]string, error) {
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-
 		return nil, err
 	}
 
@@ -98,7 +97,6 @@ func getSyscallDetails(arch, name string) (*Syscall, error) {
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
-
 	}
 
 	var syscalls []Syscall

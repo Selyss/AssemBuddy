@@ -2,20 +2,19 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"os"
+
 	"github.com/Selyss/chtsht/pkg/chtsht"
 	"github.com/akamensky/argparse"
 	// tea "github.com/charmbracelet/bubbletea"
-	"log"
-	"os"
 )
 
 func main() {
-
 	parser := argparse.NewParser("cued", "Tool for querying programming keywords")
 	topic := parser.String("p", "program", &argparse.Options{Required: false, Help: "Program to query", Default: ""})
 	query := parser.String("q", "query", &argparse.Options{Required: false, Help: "Query", Default: ""})
 	err := parser.Parse(os.Args)
-
 	// TODO: refactor so we have one output no matter what and a set input place so i can wrap with a spinner
 	if err != nil {
 		fmt.Print(parser.Usage(err))

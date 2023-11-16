@@ -1,11 +1,12 @@
-package chtsht
+package assembuddy
 
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/olekukonko/tablewriter"
 	"log"
 	"os"
+
+	"github.com/olekukonko/tablewriter"
 )
 
 func DisplaySyscall(syscallJSON []byte) {
@@ -44,7 +45,6 @@ func DisplaySyscall(syscallJSON []byte) {
 			tablewriter.Colors{tablewriter.Bold, tablewriter.FgHiYellowColor},
 			tablewriter.Colors{tablewriter.Bold, tablewriter.FgHiYellowColor})
 	} else if arch == "x86" {
-
 	} else if arch == "arm64" {
 		table.SetHeaderColor(tablewriter.Colors{tablewriter.Bold, tablewriter.FgHiRedColor},
 			tablewriter.Colors{tablewriter.Bold, tablewriter.FgHiRedColor},
@@ -56,7 +56,6 @@ func DisplaySyscall(syscallJSON []byte) {
 			tablewriter.Colors{tablewriter.Bold, tablewriter.FgHiRedColor},
 			tablewriter.Colors{tablewriter.Bold, tablewriter.FgHiRedColor},
 			tablewriter.Colors{tablewriter.Bold, tablewriter.FgHiRedColor})
-
 	} else if arch == "arm" {
 		table.SetHeaderColor(tablewriter.Colors{tablewriter.Bold, tablewriter.FgHiMagentaColor},
 			tablewriter.Colors{tablewriter.Bold, tablewriter.FgHiMagentaColor},

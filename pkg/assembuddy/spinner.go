@@ -1,11 +1,12 @@
-package chtsht
+package assembuddy
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"os"
 )
 
 type errMsg error

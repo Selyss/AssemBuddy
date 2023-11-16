@@ -1,12 +1,13 @@
-package chtsht
+package assembuddy
 
 import (
 	"bufio"
-	tea "github.com/charmbracelet/bubbletea"
 	"log"
 	"os"
 	"os/exec"
 	"strings"
+
+	tea "github.com/charmbracelet/bubbletea"
 )
 
 func SelectFromList(items []string) (string, error) {
@@ -52,7 +53,6 @@ func DisplayOutput(url string) {
 
 func ChtReadOptions() ([]string, error) {
 	readFile, err := os.Open("chtsht.txt") // TODO:
-
 	if err != nil {
 		return nil, err
 	}

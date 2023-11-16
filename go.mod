@@ -1,4 +1,4 @@
-module github.com/Selyss/chtsht
+module github.com/Selyss/Assembuddy
 
 go 1.21.3
 
