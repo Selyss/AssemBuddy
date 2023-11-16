@@ -9,10 +9,10 @@ import (
 )
 
 type CLIOptions struct {
-	Query        string
-	Architecture string
-	ListQueries  bool
-	AllStrings   bool
+	Query            string
+	Architecture     string
+	ListQueryMatches bool
+	ListArchQueries  bool
 }
 
 func parseArgs() *CLIOptions {
@@ -20,10 +20,10 @@ func parseArgs() *CLIOptions {
 
 	parser := argparse.NewParser("AssemBuddy", "Tool for querying assembly keywords")
 	query := parser.String("q", "query", &argparse.Options{Help: "Search query"})
-	architecture := parser.String("a", "architecture", &argparse.Options{Help: "Architecture for queries"})
+	arch := parser.String("a", "architecture", &argparse.Options{Help: "Architecture for queries"})
 
-	listQueries := parser.Flag("r", "list-arch", &argparse.Options{Help: "Get all syscalls from given architechture"})
-	allStrings := parser.Flag("n", "list-name", &argparse.Options{Help: "Get all syscalls with given name"})
+	listArchQueries := parser.Flag("r", "list-arch", &argparse.Options{Help: "Get all syscalls from given architechture"})
+	listQueryMatches := parser.Flag("n", "list-name", &argparse.Options{Help: "Get all syscalls with given name"})
 
 	err := parser.Parse(os.Args)
 	if err != nil {
@@ -31,9 +31,9 @@ func parseArgs() *CLIOptions {
 	}
 
 	options.Query = *query
-	options.Architecture = *architecture
-	options.ListQueries = *listQueries
-	options.AllStrings = *allStrings
+	options.Architecture = *arch
+	options.ListQueryMatches = *listQueryMatches
+	options.ListArchQueries = *listArchQueries
 
 	return options
 }
