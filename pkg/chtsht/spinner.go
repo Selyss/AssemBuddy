@@ -19,7 +19,7 @@ type model struct {
 func initialModel() model {
 	s := spinner.New()
 	s.Spinner = spinner.Dot
-	s.Style = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
+	s.Style = lipgloss.NewStyle().Foreground(lipgloss.Color("99"))
 	return model{spinner: s}
 }
 
@@ -55,13 +55,12 @@ func (m model) View() string {
 	}
 	str := fmt.Sprintf("\n   %s Loading information...press q to quit\n", m.spinner.View())
 	if m.quitting {
-		return str + "\n"
+		return ""
 	}
 	return str
 }
 
 func DisplayLoadingSpinner(p *tea.Program) {
-
 	if _, err := p.Run(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)

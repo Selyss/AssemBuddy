@@ -16,6 +16,7 @@ func main() {
 	query := parser.String("q", "query", &argparse.Options{Required: false, Help: "Query", Default: ""})
 	err := parser.Parse(os.Args)
 
+	// TODO: refactor so we have one output no matter what and a set input place so i can wrap with a spinner
 	if err != nil {
 		fmt.Print(parser.Usage(err))
 		return
