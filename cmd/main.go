@@ -46,9 +46,10 @@ func main() {
 		fmt.Println("Searching for Syscall: ", opts.Syscall)
 	}
 	if opts.Arch != "" {
-		err, table := assembuddy.GetFromArchitecture(opts.Syscall)
+		err, table := assembuddy.GetArchData(opts.Arch)
 		if err != nil {
-			log.Fatalf("Error: %s", err)
+			log.Fatal(err)
 		}
+		fmt.Println(table)
 	}
 }

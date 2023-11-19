@@ -2,11 +2,12 @@ package assembuddy
 
 import (
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 )
 
-type SystemCall struct {
+type Syscall struct {
 	Arch        string `json:"arch"`
 	Name        string `json:"name"`
 	ReturnValue string `json:"return"`
@@ -19,7 +20,7 @@ type SystemCall struct {
 	Nr          int    `json:"nr"`
 }
 
-func fetchData(endpointURL string) ([]SystemCall, error) {
+func fetchData(endpointURL string) ([]Syscall, error) {
 	response, err := http.Get(endpointURL)
 	if err != nil {
 		return nil, err
@@ -31,7 +32,7 @@ func fetchData(endpointURL string) ([]SystemCall, error) {
 		return nil, err
 	}
 
-	var systemCalls []SystemCall
+	var systemCalls []Syscall
 	err = json.Unmarshal(body, &systemCalls)
 	if err != nil {
 		return nil, err
@@ -40,6 +41,13 @@ func fetchData(endpointURL string) ([]SystemCall, error) {
 	return systemCalls, nil
 }
 
-func GetFromArchitecture(arch string) ([]string, error) {
-	return nil, nil
+func GetArchData(arch string) ([]Syscall, error) {
+	url := "https://api.syscall.sh/v1/syscalls/"
+	// if arch is x64, x86, arm, or arm64, concat to endpointURL
+	if arch == "x64" || arch == "x86" || arch == "arm" || arch == "arm64" {
+		url += arch
+	} else {
+		return nil, errors.New("invalid architecture")
+	}
+	return fetchData(url)
 }
