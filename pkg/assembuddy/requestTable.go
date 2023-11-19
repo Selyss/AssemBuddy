@@ -51,3 +51,8 @@ func GetArchData(arch string) ([]Syscall, error) {
 	}
 	return fetchData(url)
 }
+
+func GetNameData(name string) ([]Syscall, error) {
+	url := "https://api.syscall.sh/v1/syscalls/" + name // we validate this if request fails
+	return fetchData(url)
+}

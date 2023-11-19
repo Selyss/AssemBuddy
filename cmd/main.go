@@ -43,10 +43,14 @@ func parseArgs() *CLIOptions {
 func main() {
 	opts := parseArgs()
 	if opts.Syscall != "" {
-		fmt.Println("Searching for Syscall: ", opts.Syscall)
+		table, err := assembuddy.GetNameData(opts.Syscall)
+		if err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		fmt.Println(table)
 	}
 	if opts.Arch != "" {
-		err, table := assembuddy.GetArchData(opts.Arch)
+		table, err := assembuddy.GetArchData(opts.Arch)
 		if err != nil {
 			log.Fatal(err)
 		}
