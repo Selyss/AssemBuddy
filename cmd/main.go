@@ -46,6 +46,14 @@ func parseArgs() *CLIOptions {
 
 func main() {
 	opts := parseArgs()
+	if opts.Syscall == "" && opts.Arch == "" {
+		table, err := assembuddy.GetArchData(opts.Arch, opts.PrettyPrint)
+		if err != nil {
+			log.Fatal(err)
+		}
+		assembuddy.RenderArchTable(opts.Arch, table)
+	}
+
 	if opts.Syscall != "" {
 		table, err := assembuddy.GetNameData(opts.Syscall, opts.PrettyPrint)
 		if err != nil {
@@ -58,6 +66,6 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		assembuddy.RenderArchTable(table)
+		assembuddy.RenderArchTable(opts.Arch, table)
 	}
 }
