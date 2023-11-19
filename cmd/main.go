@@ -31,8 +31,9 @@ func parseArgs() *CLIOptions {
 	prettyPrint := parser.Flag("p", "pretty-print", &argparse.Options{Help: "Pretty print JSON result"})
 
 	err := parser.Parse(os.Args)
-	if err != nil {
+	if err != nil || (*query == "" && *arch == "") {
 		fmt.Print(parser.Usage(err))
+		os.Exit(1)
 	}
 
 	opts.Syscall = *query
@@ -46,26 +47,9 @@ func parseArgs() *CLIOptions {
 
 func main() {
 	opts := parseArgs()
-	if opts.Syscall == "" && opts.Arch == "" {
-		table, err := assembuddy.GetArchData(opts.Arch, opts.PrettyPrint)
-		if err != nil {
-			log.Fatal(err)
-		}
-		assembuddy.RenderArchTable(opts.Arch, table)
+	table, err := assembuddy.GetSyscallData(opts.Arch, opts.Syscall, opts.PrettyPrint)
+	if err != nil {
+		log.Fatal(err)
 	}
-
-	if opts.Syscall != "" {
-		table, err := assembuddy.GetNameData(opts.Syscall, opts.PrettyPrint)
-		if err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		assembuddy.RenderNameTable(table)
-	}
-	if opts.Arch != "" {
-		table, err := assembuddy.GetArchData(opts.Arch, opts.PrettyPrint)
-		if err != nil {
-			log.Fatal(err)
-		}
-		assembuddy.RenderArchTable(opts.Arch, table)
-	}
+	assembuddy.RenderTable(opts.Arch, table)
 }

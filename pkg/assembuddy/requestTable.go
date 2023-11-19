@@ -47,29 +47,15 @@ func fetchData(endpointURL string, prettyp bool) ([]Syscall, error) {
 	return systemCalls, nil
 }
 
-func GetSpecificData(arch string, name string, prettyp bool) ([]Syscall, error) {
+func GetSyscallData(arch string, name string, prettyp bool) ([]Syscall, error) {
 	url := "https://api.syscall.sh/v1/syscalls/"
 	// if arch is x64, x86, arm, or arm64, concat to endpointURL
 	if arch == "x64" || arch == "x86" || arch == "arm" || arch == "arm64" {
 		url += arch
-	} else {
+		// if arch is not empty, return error
+	} else if arch != "" {
 		return nil, errors.New("invalid architecture")
 	}
-	return fetchData(url, prettyp)
-}
-
-func GetArchData(arch string, prettyp bool) ([]Syscall, error) {
-	url := "https://api.syscall.sh/v1/syscalls/"
-	// if arch is x64, x86, arm, or arm64, concat to endpointURL
-	if arch == "x64" || arch == "x86" || arch == "arm" || arch == "arm64" {
-		url += arch
-	} else {
-		return nil, errors.New("invalid architecture")
-	}
-	return fetchData(url, prettyp)
-}
-
-func GetNameData(name string, prettyp bool) ([]Syscall, error) {
-	url := "https://api.syscall.sh/v1/syscalls/" + name // we validate this if request fails
+	url += name
 	return fetchData(url, prettyp)
 }
