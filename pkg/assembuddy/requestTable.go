@@ -3,6 +3,7 @@ package assembuddy
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 )
@@ -20,7 +21,7 @@ type Syscall struct {
 	Nr          int    `json:"nr"`
 }
 
-func fetchData(endpointURL string) ([]Syscall, error) {
+func fetchData(endpointURL string, prettyp bool) ([]Syscall, error) {
 	response, err := http.Get(endpointURL)
 	if err != nil {
 		return nil, err
@@ -30,6 +31,11 @@ func fetchData(endpointURL string) ([]Syscall, error) {
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		return nil, err
+	}
+	if prettyp {
+
+		fmt.Println(string(body))
+		return nil, nil
 	}
 
 	var systemCalls []Syscall
@@ -41,7 +47,7 @@ func fetchData(endpointURL string) ([]Syscall, error) {
 	return systemCalls, nil
 }
 
-func GetArchData(arch string) ([]Syscall, error) {
+func GetArchData(arch string, prettyp bool) ([]Syscall, error) {
 	url := "https://api.syscall.sh/v1/syscalls/"
 	// if arch is x64, x86, arm, or arm64, concat to endpointURL
 	if arch == "x64" || arch == "x86" || arch == "arm" || arch == "arm64" {
@@ -49,10 +55,10 @@ func GetArchData(arch string) ([]Syscall, error) {
 	} else {
 		return nil, errors.New("invalid architecture")
 	}
-	return fetchData(url)
+	return fetchData(url, prettyp)
 }
 
-func GetNameData(name string) ([]Syscall, error) {
+func GetNameData(name string, prettyp bool) ([]Syscall, error) {
 	url := "https://api.syscall.sh/v1/syscalls/" + name // we validate this if request fails
-	return fetchData(url)
+	return fetchData(url, prettyp)
 }

@@ -7,7 +7,6 @@ import (
 
 	"github.com/Selyss/AssemBuddy/pkg/assembuddy"
 	"github.com/akamensky/argparse"
-	// tea "github.com/charmbracelet/bubbletea"
 )
 
 type CLIOptions struct {
@@ -15,6 +14,7 @@ type CLIOptions struct {
 	Arch             string
 	ListQueryMatches bool
 	ListArchQueries  bool
+	PrettyPrint      bool
 }
 
 func parseArgs() *CLIOptions {
@@ -27,6 +27,9 @@ func parseArgs() *CLIOptions {
 	listArchQueries := parser.Flag("r", "list-arch", &argparse.Options{Help: "Get all syscalls from given architechture"})
 	listQueryMatches := parser.Flag("n", "list-name", &argparse.Options{Help: "Get all syscalls with given name"})
 
+	// TODO: result is definitely printed but im not convinced its pretty.
+	prettyPrint := parser.Flag("p", "pretty-print", &argparse.Options{Help: "Pretty print JSON result"})
+
 	err := parser.Parse(os.Args)
 	if err != nil {
 		fmt.Print(parser.Usage(err))
@@ -36,6 +39,7 @@ func parseArgs() *CLIOptions {
 	opts.Arch = *arch
 	opts.ListQueryMatches = *listQueryMatches
 	opts.ListArchQueries = *listArchQueries
+	opts.PrettyPrint = *prettyPrint
 
 	return opts
 }
@@ -43,17 +47,17 @@ func parseArgs() *CLIOptions {
 func main() {
 	opts := parseArgs()
 	if opts.Syscall != "" {
-		table, err := assembuddy.GetNameData(opts.Syscall)
+		table, err := assembuddy.GetNameData(opts.Syscall, opts.PrettyPrint)
 		if err != nil {
 			log.Fatalf("error: %v", err)
 		}
-		fmt.Println(table)
+		assembuddy.RenderNameTable(table)
 	}
 	if opts.Arch != "" {
-		table, err := assembuddy.GetArchData(opts.Arch)
+		table, err := assembuddy.GetArchData(opts.Arch, opts.PrettyPrint)
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println(table)
+		assembuddy.RenderArchTable(table)
 	}
 }
