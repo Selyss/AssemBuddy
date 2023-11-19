@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/Selyss/AssemBuddy/pkg/assembuddy"
@@ -9,8 +10,15 @@ import (
 	// tea "github.com/charmbracelet/bubbletea"
 )
 
-func parseArgs() *assembuddy.CLIOptions {
-	opts := &assembuddy.CLIOptions{}
+type CLIOptions struct {
+	Syscall          string
+	Arch             string
+	ListQueryMatches bool
+	ListArchQueries  bool
+}
+
+func parseArgs() *CLIOptions {
+	opts := &CLIOptions{}
 
 	parser := argparse.NewParser("AssemBuddy", "Tool for querying assembly keywords")
 	query := parser.String("q", "query", &argparse.Options{Help: "Search query"})
@@ -34,6 +42,13 @@ func parseArgs() *assembuddy.CLIOptions {
 
 func main() {
 	opts := parseArgs()
-	// assembuddy.QueryASM(opts)
-	fmt.Println(assembuddy.ListQueryMatches(opts.Syscall))
+	if opts.Syscall != "" {
+		fmt.Println("Searching for Syscall: ", opts.Syscall)
+	}
+	if opts.Arch != "" {
+		err, table := assembuddy.GetFromArchitecture(opts.Syscall)
+		if err != nil {
+			log.Fatalf("Error: %s", err)
+		}
+	}
 }
