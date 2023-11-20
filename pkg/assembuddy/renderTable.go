@@ -24,7 +24,7 @@ func RenderTable(arch string, tableData []Syscall) {
 
 	var (
 		CellStyle = re.NewStyle().Padding(0, 1).Align(lipgloss.Center)
-		RowStyle  = CellStyle.Copy().Foreground(white)
+		RowStyle  = CellStyle.Copy().Foreground(white).MaxWidth(12).PaddingBottom(1)
 	)
 
 	var (
@@ -64,6 +64,7 @@ func RenderTable(arch string, tableData []Syscall) {
 			return style
 		}).
 		Rows(rows...)
+
 	getHeaders(arch, t)
 	fmt.Println(t)
 }
