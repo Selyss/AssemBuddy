@@ -19,11 +19,10 @@ const (
 )
 
 func RenderTable(arch string, tableData []Syscall) {
-	// TODO: add the ARG0 (x0) stuff to headers
 	re := lipgloss.NewRenderer(os.Stdout)
 
 	var (
-		CellStyle = re.NewStyle().Padding(0, 1).Align(lipgloss.Center)
+		CellStyle = re.NewStyle().Align(lipgloss.Center).Padding(0, 1)
 		RowStyle  = CellStyle.Copy().Foreground(white).MaxWidth(12).PaddingBottom(1)
 	)
 
@@ -36,12 +35,18 @@ func RenderTable(arch string, tableData []Syscall) {
 	)
 
 	rows := [][]string{}
+
 	for _, syscall := range tableData {
-		rows = append(rows, []string{syscall.Arch, fmt.Sprint(syscall.Nr), syscall.Name, syscall.ReturnValue, syscall.Arg0, syscall.Arg1, syscall.Arg2, syscall.Arg3, syscall.Arg4, syscall.Arg5})
+		if arch == "" {
+			rows = append(rows, []string{syscall.Arch, fmt.Sprint(syscall.Nr), syscall.Name, syscall.ReturnValue, syscall.Arg0, syscall.Arg1, syscall.Arg2, syscall.Arg3, syscall.Arg4, syscall.Arg5})
+		} else {
+			rows = append(rows, []string{fmt.Sprint(syscall.Nr), syscall.Name, syscall.ReturnValue, syscall.Arg0, syscall.Arg1, syscall.Arg2, syscall.Arg3, syscall.Arg4, syscall.Arg5})
+		}
 	}
 
 	t := table.New().
 		Border(lipgloss.ThickBorder()).
+		BorderRow(true).
 		StyleFunc(func(row, col int) lipgloss.Style {
 			var style lipgloss.Style
 
@@ -72,16 +77,16 @@ func RenderTable(arch string, tableData []Syscall) {
 func getHeaders(arch string, t *table.Table) {
 	switch arch {
 	case "x64":
-		t.Headers("NR", "SYSCALL", "RAX", "rdi", "rsi", "rdx", "r10", "r8", "r9")
+		t.Headers("NR", "SYSCALL", "RAX", "ARG0 (rdi)", "ARG1 (rsi)", "ARG2 (rdx)", "ARG3 (r10)", "ARG4 (r8)", "ARG5 (r9)")
 		t.BorderStyle(lipgloss.NewStyle().Foreground(orange))
 	case "x86":
-		t.Headers("NR", "SYSCALL", "eax", "ebx", "ecx", "edx", "esi", "edi", "ebp")
+		t.Headers("NR", "SYSCALL", "eax", "ARG0 (ebx)", "ARG1 (ecx)", "ARG2 (edx)", "ARG3 (esi)", "ARG4 (edi)", "ARG5 (ebp)")
 		t.BorderStyle(lipgloss.NewStyle().Foreground(blue))
 	case "arm64":
-		t.Headers("NR", "SYSCALL", "x8", "x0", "x1", "x2", "x3", "x4", "x5")
+		t.Headers("NR", "SYSCALL", "x8", "ARG0 (x0)", "ARG1 (x1)", "ARG2 (x2)", "ARG3 (x3)", "ARG4 (x4)", "ARG5 (x5)")
 		t.BorderStyle(lipgloss.NewStyle().Foreground(red))
 	case "arm":
-		t.Headers("NR", "SYSCALL", "r7", "r0", "r1", "r2", "r3", "r4", "r5")
+		t.Headers("NR", "SYSCALL", "r7", "ARG0 (r0)", "ARG1 (r1)", "ARG2 (r2)", "ARG3 (r3)", "ARG4 (r4)", "ARG5 (r5)")
 		t.BorderStyle(lipgloss.NewStyle().Foreground(purple))
 	case "":
 		t.Headers("ARCH", "NR", "NAME", "RETURN", "ARG0", "ARG1", "ARG2", "ARG3", "ARG4", "ARG5")
