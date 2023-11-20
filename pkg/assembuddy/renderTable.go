@@ -47,7 +47,7 @@ func RenderTable(arch string, tableData []Syscall) {
 	t := table.New().
 		Border(lipgloss.ThickBorder()).
 		BorderRow(true).
-		StyleFunc(func(row, col int) lipgloss.Style {
+		StyleFunc(func(row, _ int) lipgloss.Style {
 			var style lipgloss.Style
 
 			if row == 0 {
