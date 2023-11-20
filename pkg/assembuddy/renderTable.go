@@ -53,5 +53,7 @@ func RenderTable(arch string, tableData []Syscall) {
 			table.Append([]string{syscall.Arch, fmt.Sprint(syscall.Nr), syscall.Name, syscall.ReturnValue, syscall.Arg0, syscall.Arg1, syscall.Arg2, syscall.Arg3, syscall.Arg4, syscall.Arg5})
 		}
 	}
+
 	table.Render()
+	os.Exit(0)
 }
