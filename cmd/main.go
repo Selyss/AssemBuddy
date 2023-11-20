@@ -35,7 +35,6 @@ func parseArgs() *CLIOptions {
 		fmt.Print(parser.Usage(err))
 		os.Exit(1)
 	}
-
 	opts.Syscall = *query
 	opts.Arch = *arch
 	opts.ListQueryMatches = *listQueryMatches
