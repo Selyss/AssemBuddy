@@ -27,7 +27,6 @@ func parseArgs() *CLIOptions {
 	listArchQueries := parser.Flag("r", "list-arch", &argparse.Options{Help: "Get all syscalls from given architechture"})
 	listQueryMatches := parser.Flag("n", "list-name", &argparse.Options{Help: "Get all syscalls with given name"})
 
-	// TODO: result is definitely printed but im not convinced its pretty.
 	prettyPrint := parser.Flag("p", "pretty-print", &argparse.Options{Help: "Pretty print JSON result"})
 
 	err := parser.Parse(os.Args)
@@ -46,6 +45,8 @@ func parseArgs() *CLIOptions {
 
 func main() {
 	opts := parseArgs()
+	if opts.ListArchQueries {
+	}
 	table, err := assembuddy.GetSyscallData(opts.Arch, opts.Syscall, opts.PrettyPrint)
 	if err != nil {
 		log.Fatal(err)

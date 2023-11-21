@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 )
 
 type Syscall struct {
@@ -35,7 +36,7 @@ func fetchData(endpointURL string, prettyp bool) ([]Syscall, error) {
 	if prettyp {
 
 		fmt.Println(string(body))
-		return nil, nil
+		os.Exit(0)
 	}
 
 	var systemCalls []Syscall
