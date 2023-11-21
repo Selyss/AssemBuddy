@@ -10,11 +10,10 @@ import (
 )
 
 type CLIOptions struct {
-	Syscall          string
-	Arch             string
-	ListQueryMatches bool
-	ListArchQueries  bool
-	PrettyPrint      bool
+	Syscall         string
+	Arch            string
+	ListArchQueries bool
+	PrettyPrint     bool
 }
 
 func parseArgs() *CLIOptions {
@@ -25,18 +24,16 @@ func parseArgs() *CLIOptions {
 	arch := parser.String("a", "architecture", &argparse.Options{Help: "Architecture for queries"})
 
 	listArch := parser.Flag("r", "list-arch", &argparse.Options{Help: "Get all supported architechture convensions"})
-	listQuery := parser.Flag("n", "list-name", &argparse.Options{Help: "Get all syscalls with given name"})
 
 	prettyPrint := parser.Flag("p", "pretty-print", &argparse.Options{Help: "Pretty print JSON result"})
 
 	err := parser.Parse(os.Args)
-	if err != nil || (*query == "" && *arch == "") && (!*listArch && !*listQuery) {
+	if err != nil || (*query == "" && *arch == "") && !*listArch {
 		fmt.Print(parser.Usage(err))
 		os.Exit(1)
 	}
 	opts.Syscall = *query
 	opts.Arch = *arch
-	opts.ListQueryMatches = *listQuery
 	opts.ListArchQueries = *listArch
 	opts.PrettyPrint = *prettyPrint
 
