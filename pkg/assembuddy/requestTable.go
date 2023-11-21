@@ -22,6 +22,13 @@ type Syscall struct {
 	Nr          int    `json:"nr"`
 }
 
+type CLIOptions struct {
+	Syscall         string
+	Arch            string
+	ListArchQueries bool
+	PrettyPrint     bool
+}
+
 func fetchData(endpointURL string, prettyp bool) ([]Syscall, error) {
 	response, err := http.Get(endpointURL)
 	if err != nil {
@@ -60,7 +67,6 @@ func GetSyscallData(arch string, name string, prettyp bool) ([]Syscall, error) {
 	if name != "" {
 		url += "/" + name
 	}
-	fmt.Println(url)
 	return fetchData(url, prettyp)
 }
 

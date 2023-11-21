@@ -9,15 +9,8 @@ import (
 	"github.com/akamensky/argparse"
 )
 
-type CLIOptions struct {
-	Syscall         string
-	Arch            string
-	ListArchQueries bool
-	PrettyPrint     bool
-}
-
-func parseArgs() *CLIOptions {
-	opts := &CLIOptions{}
+func parseArgs() *assembuddy.CLIOptions {
+	opts := &assembuddy.CLIOptions{}
 
 	parser := argparse.NewParser("AssemBuddy", "Tool for querying assembly keywords")
 	query := parser.String("q", "query", &argparse.Options{Help: "Search query"})
