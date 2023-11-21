@@ -52,7 +52,7 @@ func GetSyscallData(arch string, name string, prettyp bool) ([]Syscall, error) {
 	url := "https://api.syscall.sh/v1/syscalls/"
 	// if arch is x64, x86, arm, or arm64, concat to endpointURL
 	if arch == "x64" || arch == "x86" || arch == "arm" || arch == "arm64" {
-		url += arch
+		url += arch + "/"
 		// if arch is not empty, return error
 	} else if arch != "" {
 		return nil, errors.New("invalid architecture")
@@ -64,15 +64,4 @@ func GetSyscallData(arch string, name string, prettyp bool) ([]Syscall, error) {
 func ArchInfo() ([]Syscall, error) {
 	url := "https://api.syscall.sh/v1/conventions"
 	return fetchData(url, true)
-}
-
-func QueryInfo(arch string) ([]Syscall, error) {
-	url := "https://api.syscall.sh/v1/syscalls/"
-	if arch == "x64" || arch == "x86" || arch == "arm" || arch == "arm64" {
-		url += arch
-	} else if arch != "" {
-		return nil, errors.New("invalid architecture")
-	}
-	return fetchData(url, true)
-	// TODO:
 }

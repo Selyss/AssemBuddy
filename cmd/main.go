@@ -51,8 +51,8 @@ func main() {
 			log.Fatalf("Error: %s", err)
 		}
 	}
-	if opts.ListQueryMatches {
-		_, err := assembuddy.QueryInfo(opts.Arch)
+	if opts.Arch != "" && opts.Syscall != "" {
+		_, err := assembuddy.GetSyscallData(opts.Arch, opts.Syscall, opts.PrettyPrint)
 		if err != nil {
 			log.Fatalf("Error: %s", err)
 		}
