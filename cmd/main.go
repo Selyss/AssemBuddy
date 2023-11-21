@@ -30,7 +30,7 @@ func parseArgs() *CLIOptions {
 	prettyPrint := parser.Flag("p", "pretty-print", &argparse.Options{Help: "Pretty print JSON result"})
 
 	err := parser.Parse(os.Args)
-	if err != nil || (*query == "" && *arch == "") && (!*listArch || !*listQuery) {
+	if err != nil || (*query == "" && *arch == "") && (!*listArch && !*listQuery) {
 		fmt.Print(parser.Usage(err))
 		os.Exit(1)
 	}
@@ -47,6 +47,12 @@ func main() {
 	opts := parseArgs()
 	if opts.ListArchQueries {
 		_, err := assembuddy.ArchInfo()
+		if err != nil {
+			log.Fatalf("Error: %s", err)
+		}
+	}
+	if opts.ListQueryMatches {
+		_, err := assembuddy.QueryInfo(opts.Arch)
 		if err != nil {
 			log.Fatalf("Error: %s", err)
 		}
