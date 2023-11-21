@@ -24,20 +24,20 @@ func parseArgs() *CLIOptions {
 	query := parser.String("q", "query", &argparse.Options{Help: "Search query"})
 	arch := parser.String("a", "architecture", &argparse.Options{Help: "Architecture for queries"})
 
-	listArchQueries := parser.Flag("r", "list-arch", &argparse.Options{Help: "Get all syscalls from given architechture"})
-	listQueryMatches := parser.Flag("n", "list-name", &argparse.Options{Help: "Get all syscalls with given name"})
+	listArch := parser.Flag("r", "list-arch", &argparse.Options{Help: "Get all supported architechture convensions"})
+	listQuery := parser.Flag("n", "list-name", &argparse.Options{Help: "Get all syscalls with given name"})
 
 	prettyPrint := parser.Flag("p", "pretty-print", &argparse.Options{Help: "Pretty print JSON result"})
 
 	err := parser.Parse(os.Args)
-	if err != nil || (*query == "" && *arch == "") {
+	if err != nil || (*query == "" && *arch == "") && (!*listArch || !*listQuery) {
 		fmt.Print(parser.Usage(err))
 		os.Exit(1)
 	}
 	opts.Syscall = *query
 	opts.Arch = *arch
-	opts.ListQueryMatches = *listQueryMatches
-	opts.ListArchQueries = *listArchQueries
+	opts.ListQueryMatches = *listQuery
+	opts.ListArchQueries = *listArch
 	opts.PrettyPrint = *prettyPrint
 
 	return opts
@@ -46,6 +46,10 @@ func parseArgs() *CLIOptions {
 func main() {
 	opts := parseArgs()
 	if opts.ListArchQueries {
+		_, err := assembuddy.ArchInfo()
+		if err != nil {
+			log.Fatalf("Error: %s", err)
+		}
 	}
 	table, err := assembuddy.GetSyscallData(opts.Arch, opts.Syscall, opts.PrettyPrint)
 	if err != nil {

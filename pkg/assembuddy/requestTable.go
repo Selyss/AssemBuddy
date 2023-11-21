@@ -60,3 +60,8 @@ func GetSyscallData(arch string, name string, prettyp bool) ([]Syscall, error) {
 	url += name
 	return fetchData(url, prettyp)
 }
+
+func ArchInfo() ([]Syscall, error) {
+	url := "https://api.syscall.sh/v1/conventions"
+	return fetchData(url, true)
+}
