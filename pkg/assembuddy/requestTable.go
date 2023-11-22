@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 )
 
 type Syscall struct {
@@ -34,7 +33,7 @@ const (
 	conventionEndpoint = "https://api.syscall.sh/v1/conventions"
 )
 
-func fetchData(endpointURL string, prettyPrint bool) ([]Syscall, error) {
+func FetchData(endpointURL string) ([]Syscall, error) {
 	response, err := http.Get(endpointURL)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch data: %w", err)
@@ -44,11 +43,6 @@ func fetchData(endpointURL string, prettyPrint bool) ([]Syscall, error) {
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read response body: %w", err)
-	}
-	if prettyPrint {
-
-		fmt.Println(string(body))
-		os.Exit(0)
 	}
 
 	var systemCalls []Syscall
@@ -60,7 +54,24 @@ func fetchData(endpointURL string, prettyPrint bool) ([]Syscall, error) {
 	return systemCalls, nil
 }
 
-func GetSyscallData(opts *CLIOptions) ([]Syscall, error) {
+func PrettyPrint(endpointURL string) error {
+	response, err := http.Get(endpointURL)
+	if err != nil {
+		return fmt.Errorf("failed to fetch data: %w", err)
+	}
+	defer response.Body.Close()
+
+	body, err := io.ReadAll(response.Body)
+	if err != nil {
+		return fmt.Errorf("failed to read response body: %w", err)
+	}
+
+	fmt.Println(string(body))
+
+	return nil
+}
+
+func GetSyscallData(opts *CLIOptions) (string, error) {
 	arch := opts.Arch
 	url := syscallEndpoint
 	// if arch is x64, x86, arm, or arm64, concat to endpointURL
@@ -68,14 +79,14 @@ func GetSyscallData(opts *CLIOptions) ([]Syscall, error) {
 		url += "/" + arch
 		// if arch is not empty, return error
 	} else if arch != "" {
-		return nil, errors.New("invalid architecture")
+		return "", errors.New("invalid architecture")
 	}
 	if opts.Syscall != "" {
 		url += "/" + opts.Syscall
 	}
-	return fetchData(url, opts.PrettyPrint)
+	return url, nil
 }
 
 func ArchInfo() ([]Syscall, error) {
-	return fetchData(conventionEndpoint, true)
+	return FetchData(conventionEndpoint)
 }

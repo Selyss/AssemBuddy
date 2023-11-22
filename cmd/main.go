@@ -51,9 +51,20 @@ func listArch() {
 }
 
 func syscallData(opts *assembuddy.CLIOptions) {
-	table, err := assembuddy.GetSyscallData(opts)
+	url, err := assembuddy.GetSyscallData(opts)
 	if err != nil {
 		log.Fatalf("Error: %v", err)
 	}
-	assembuddy.RenderTable(opts, table)
+
+	if opts.PrettyPrint {
+		assembuddy.PrettyPrint(url)
+	} else {
+
+		table, err := assembuddy.FetchData(url)
+		if err != nil {
+			log.Fatalf("Error: %v", err)
+		}
+
+		assembuddy.RenderTable(opts, table)
+	}
 }

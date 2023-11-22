@@ -29,7 +29,11 @@ func TestGetSyscallData(t *testing.T) {
 
 	want = append(want, syscall)
 
-	got, err := GetSyscallData(&opts)
+	url, err := GetSyscallData(&opts)
+	if err != nil {
+		t.Errorf("Expected url to return correctly %v", err)
+	}
+	got, err := FetchData(url)
 	if !(reflect.DeepEqual(want, got)) || err != nil {
 		t.Errorf("Expected opts to parse correctly %v", err)
 	}
