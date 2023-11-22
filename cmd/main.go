@@ -35,15 +35,25 @@ func parseArgs() *assembuddy.CLIOptions {
 
 func main() {
 	opts := parseArgs()
+
 	if opts.ListArch {
-		_, err := assembuddy.ArchInfo()
-		if err != nil {
-			log.Fatalf("Error: %s", err)
-		}
+		listArch()
+	} else {
+		syscallData(opts)
 	}
+}
+
+func listArch() {
+	_, err := assembuddy.ArchInfo()
+	if err != nil {
+		log.Fatalf("Error: %v", err)
+	}
+}
+
+func syscallData(opts *assembuddy.CLIOptions) {
 	table, err := assembuddy.GetSyscallData(opts)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Error: %v", err)
 	}
 	assembuddy.RenderTable(opts, table)
 }
