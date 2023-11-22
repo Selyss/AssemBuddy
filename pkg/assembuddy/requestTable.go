@@ -23,10 +23,10 @@ type Syscall struct {
 }
 
 type CLIOptions struct {
-	Syscall         string
-	Arch            string
-	ListArchQueries bool
-	PrettyPrint     bool
+	Syscall     string
+	Arch        string
+	ListArch    bool
+	PrettyPrint bool
 }
 
 func fetchData(endpointURL string, prettyp bool) ([]Syscall, error) {
@@ -55,7 +55,8 @@ func fetchData(endpointURL string, prettyp bool) ([]Syscall, error) {
 	return systemCalls, nil
 }
 
-func GetSyscallData(arch string, name string, prettyp bool) ([]Syscall, error) {
+func GetSyscallData(opts *CLIOptions) ([]Syscall, error) {
+	arch := opts.Arch
 	url := "https://api.syscall.sh/v1/syscalls"
 	// if arch is x64, x86, arm, or arm64, concat to endpointURL
 	if arch == "x64" || arch == "x86" || arch == "arm" || arch == "arm64" {
@@ -64,10 +65,10 @@ func GetSyscallData(arch string, name string, prettyp bool) ([]Syscall, error) {
 	} else if arch != "" {
 		return nil, errors.New("invalid architecture")
 	}
-	if name != "" {
-		url += "/" + name
+	if opts.Syscall != "" {
+		url += "/" + opts.Syscall
 	}
-	return fetchData(url, prettyp)
+	return fetchData(url, opts.PrettyPrint)
 }
 
 func ArchInfo() ([]Syscall, error) {

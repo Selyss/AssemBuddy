@@ -18,7 +18,8 @@ const (
 	white  = lipgloss.Color("#ffffff")
 )
 
-func RenderTable(arch string, tableData []Syscall) {
+func RenderTable(opts *CLIOptions, tableData []Syscall) {
+	arch := opts.Arch
 	re := lipgloss.NewRenderer(os.Stdout)
 
 	var (

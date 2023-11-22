@@ -27,7 +27,7 @@ func parseArgs() *assembuddy.CLIOptions {
 	}
 	opts.Syscall = *query
 	opts.Arch = *arch
-	opts.ListArchQueries = *listArch
+	opts.ListArch = *listArch
 	opts.PrettyPrint = *prettyPrint
 
 	return opts
@@ -35,15 +35,15 @@ func parseArgs() *assembuddy.CLIOptions {
 
 func main() {
 	opts := parseArgs()
-	if opts.ListArchQueries {
+	if opts.ListArch {
 		_, err := assembuddy.ArchInfo()
 		if err != nil {
 			log.Fatalf("Error: %s", err)
 		}
 	}
-	table, err := assembuddy.GetSyscallData(opts.Arch, opts.Syscall, opts.PrettyPrint)
+	table, err := assembuddy.GetSyscallData(opts)
 	if err != nil {
 		log.Fatal(err)
 	}
-	assembuddy.RenderTable(opts.Arch, table)
+	assembuddy.RenderTable(opts, table)
 }
