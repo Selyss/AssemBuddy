@@ -29,18 +29,23 @@ type CLIOptions struct {
 	PrettyPrint bool
 }
 
-func fetchData(endpointURL string, prettyp bool) ([]Syscall, error) {
+const (
+	syscallEndpoint    = "https://api.syscall.sh/v1/syscalls"
+	conventionEndpoint = "https://api.syscall.sh/v1/conventions"
+)
+
+func fetchData(endpointURL string, prettyPrint bool) ([]Syscall, error) {
 	response, err := http.Get(endpointURL)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to fetch data: %w", err)
 	}
 	defer response.Body.Close()
 
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to read response body: %w", err)
 	}
-	if prettyp {
+	if prettyPrint {
 
 		fmt.Println(string(body))
 		os.Exit(0)
@@ -49,7 +54,7 @@ func fetchData(endpointURL string, prettyp bool) ([]Syscall, error) {
 	var systemCalls []Syscall
 	err = json.Unmarshal(body, &systemCalls)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to unmarshal JSON: %w", err)
 	}
 
 	return systemCalls, nil
@@ -57,7 +62,7 @@ func fetchData(endpointURL string, prettyp bool) ([]Syscall, error) {
 
 func GetSyscallData(opts *CLIOptions) ([]Syscall, error) {
 	arch := opts.Arch
-	url := "https://api.syscall.sh/v1/syscalls"
+	url := syscallEndpoint
 	// if arch is x64, x86, arm, or arm64, concat to endpointURL
 	if arch == "x64" || arch == "x86" || arch == "arm" || arch == "arm64" {
 		url += "/" + arch
@@ -72,6 +77,5 @@ func GetSyscallData(opts *CLIOptions) ([]Syscall, error) {
 }
 
 func ArchInfo() ([]Syscall, error) {
-	url := "https://api.syscall.sh/v1/conventions"
-	return fetchData(url, true)
+	return fetchData(conventionEndpoint, true)
 }
