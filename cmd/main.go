@@ -16,7 +16,7 @@ func parseArgs() *assembuddy.CLIOptions {
 	query := parser.String("q", "query", &argparse.Options{Help: "Search query"})
 	arch := parser.String("a", "architecture", &argparse.Options{Help: "Architecture for queries"})
 
-	listArch := parser.Flag("r", "list-arch", &argparse.Options{Help: "Get all supported architechture convensions"})
+	listArch := parser.Flag("r", "list-arch", &argparse.Options{Help: "Get all supported architecture convensions"})
 
 	prettyPrint := parser.Flag("p", "pretty-print", &argparse.Options{Help: "Pretty print JSON result"})
 
