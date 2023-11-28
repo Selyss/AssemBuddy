@@ -1,4 +1,4 @@
-# Assembuddy
+# AssemBuddy
 Command line tool for querying assembly information. Big thanks to [syscall.sh](https://syscall.sh/) for such an awesome API.
 
 ![demo](https://github.com/Selyss/AssemBuddy/assets/99344963/987e16a2-ce27-4c27-b360-6327232882e2)
