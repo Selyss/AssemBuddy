@@ -19,7 +19,7 @@ Command line tool for querying assembly information. Big thanks to [syscall.sh](
 ## 📦 Installation
 
 The recommended installation method is building from source \
-You can add the binary to `$PATH` to use it from anywhere on your system \
+You can add the binary to `$PATH` to use it from anywhere on your system
 
 ## ⚙️ Examples
 
