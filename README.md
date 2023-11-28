@@ -18,6 +18,7 @@ Command line tool for querying assembly information. Big thanks to [syscall.sh](
 
 ## 📦 Installation
 
+The recommended installation method is building from source
 Install binary from [releases](https://github.com/Selyss/AssemBuddy/releases/)
 You can add the binary to `$PATH` to use it from anywhere on your system
 
