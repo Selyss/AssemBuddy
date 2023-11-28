@@ -86,7 +86,3 @@ func GetSyscallData(opts *CLIOptions) (string, error) {
 	}
 	return url, nil
 }
-
-func ArchInfo() ([]Syscall, error) {
-	return FetchData(conventionEndpoint)
-}

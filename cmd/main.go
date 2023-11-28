@@ -16,18 +16,15 @@ func parseArgs() *assembuddy.CLIOptions {
 	query := parser.String("q", "query", &argparse.Options{Help: "Search query"})
 	arch := parser.String("a", "architecture", &argparse.Options{Help: "Architecture for queries"})
 
-	listArch := parser.Flag("r", "list-arch", &argparse.Options{Help: "Get all supported architecture convensions"})
-
 	prettyPrint := parser.Flag("p", "pretty-print", &argparse.Options{Help: "Pretty print JSON result"})
 
 	err := parser.Parse(os.Args)
-	if err != nil || (*query == "" && *arch == "") && !*listArch {
+	if err != nil || (*query == "" && *arch == "") {
 		fmt.Print(parser.Usage(err))
 		os.Exit(1)
 	}
 	opts.Syscall = *query
 	opts.Arch = *arch
-	opts.ListArch = *listArch
 	opts.PrettyPrint = *prettyPrint
 
 	return opts
@@ -36,18 +33,7 @@ func parseArgs() *assembuddy.CLIOptions {
 func main() {
 	opts := parseArgs()
 
-	if opts.ListArch {
-		listArch()
-	} else {
-		syscallData(opts)
-	}
-}
-
-func listArch() {
-	_, err := assembuddy.ArchInfo()
-	if err != nil {
-		log.Fatalf("Error: %v", err)
-	}
+	syscallData(opts)
 }
 
 func syscallData(opts *assembuddy.CLIOptions) {
