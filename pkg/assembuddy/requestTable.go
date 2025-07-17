@@ -1,12 +1,15 @@
 package assembuddy
 
 import (
+	_ "embed"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
-	"net/http"
+	"strings"
 )
+
+// go:embed syscalls.json
+var syscallsData []byte
 
 type Syscall struct {
 	Arch        string `json:"arch"`
@@ -28,61 +31,79 @@ type CLIOptions struct {
 	PrettyPrint bool
 }
 
-const (
-	syscallEndpoint    = "https://api.syscall.sh/v1/syscalls"
-	conventionEndpoint = "https://api.syscall.sh/v1/conventions"
-)
-
-func FetchData(endpointURL string) ([]Syscall, error) {
-	response, err := http.Get(endpointURL)
+func LoadSyscallData() ([]Syscall, error) {
+	var syscalls []Syscall
+	err := json.Unmarshal(syscallsData, &syscalls)
 	if err != nil {
-		return nil, fmt.Errorf("failed to fetch data: %w", err)
-	}
-	defer response.Body.Close()
-
-	body, err := io.ReadAll(response.Body)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read response body: %w", err)
+		return nil, fmt.Errorf("failed to unmarshal embedded JSON: %w", err)
 	}
 
-	var systemCalls []Syscall
-	err = json.Unmarshal(body, &systemCalls)
-	if err != nil {
-		return nil, fmt.Errorf("failed to unmarshal JSON: %w", err)
-	}
-
-	return systemCalls, nil
+	return syscalls, nil
 }
 
-func PrettyPrint(endpointURL string) error {
-	response, err := http.Get(endpointURL)
+func FetchData(query string) ([]Syscall, error) {
+	allSyscalls, err := LoadSyscallData()
 	if err != nil {
-		return fmt.Errorf("failed to fetch data: %w", err)
-	}
-	defer response.Body.Close()
-
-	body, err := io.ReadAll(response.Body)
-	if err != nil {
-		return fmt.Errorf("failed to read response body: %w", err)
+		return nil, err
 	}
 
-	fmt.Println(string(body))
+	if query == "" {
+		return allSyscalls, nil
+	}
 
+	return FilterSyscalls(allSyscalls, query), nil
+}
+
+func FilterSyscalls(syscalls []Syscall, query string) []Syscall {
+	queryLower := strings.ToLower(query)
+	var filtered []Syscall
+
+	for _, syscall := range syscalls {
+		if strings.Contains(strings.ToLower(syscall.Name), queryLower) ||
+			strings.Contains(strings.ToLower(syscall.Arch), queryLower) {
+			filtered = append(filtered, syscall)
+		}
+	}
+
+	return filtered
+}
+
+func PrettyPrint(query string) error {
+	syscalls, err := FetchData(query)
+	if err != nil {
+		return err
+	}
+
+	jsonData, err := json.MarshalIndent(syscalls, "", " ")
+	if err != nil {
+		return fmt.Errorf("failed to marshal JSON: %w", err)
+	}
+
+	fmt.Println(string(jsonData))
 	return nil
 }
 
 func GetSyscallData(opts *CLIOptions) (string, error) {
 	arch := opts.Arch
-	url := syscallEndpoint
-	// if arch is x64, x86, arm, or arm64, concat to endpointURL
-	if arch == "x64" || arch == "x86" || arch == "arm" || arch == "arm64" {
-		url += "/" + arch
-		// if arch is not empty, return error
-	} else if arch != "" {
+	syscall := opts.Syscall
+
+	// validate architecture
+	if arch != "" && arch != "x64" && arch != "x86" && arch != "arm" && arch != "arm64" {
 		return "", errors.New("invalid architecture")
 	}
-	if opts.Syscall != "" {
-		url += "/" + opts.Syscall
+
+	query := ""
+
+	if arch != "" {
+		query = arch
 	}
-	return url, nil
+	if syscall != "" {
+		if query != "" {
+			query += " " + syscall
+		} else {
+			query = syscall
+		}
+	}
+
+	return query, nil
 }
