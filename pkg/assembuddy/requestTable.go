@@ -3,7 +3,6 @@ package assembuddy
 import (
 	_ "embed"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"strings"
 )
@@ -47,20 +46,34 @@ func FetchData(query string) ([]Syscall, error) {
 		return nil, err
 	}
 
-	if query == "" {
-		return allSyscalls, nil
-	}
-
 	return FilterSyscalls(allSyscalls, query), nil
 }
 
+func FetchDataWithArch(query string, arch string) ([]Syscall, error) {
+	allSyscalls, err := LoadSyscallData()
+	if err != nil {
+		return nil, err
+	}
+
+	filtered := FilterByArch(allSyscalls, arch)
+
+	if query != "" {
+		filtered = FilterSyscalls(filtered, query)
+	}
+
+	return filtered, nil
+}
+
 func FilterSyscalls(syscalls []Syscall, query string) []Syscall {
+	if query == "" {
+		return syscalls
+	}
+
 	queryLower := strings.ToLower(query)
 	var filtered []Syscall
 
 	for _, syscall := range syscalls {
-		if strings.Contains(strings.ToLower(syscall.Name), queryLower) ||
-			strings.Contains(strings.ToLower(syscall.Arch), queryLower) {
+		if strings.Contains(strings.ToLower(syscall.Name), queryLower) {
 			filtered = append(filtered, syscall)
 		}
 	}
@@ -68,7 +81,22 @@ func FilterSyscalls(syscalls []Syscall, query string) []Syscall {
 	return filtered
 }
 
-func PrettyPrint(query string) error {
+func FilterByArch(syscalls []Syscall, arch string) []Syscall {
+	if arch == "" {
+		return syscalls
+	}
+
+	var filtered []Syscall
+	for _, syscall := range syscalls {
+		if strings.EqualFold(syscall.Arch, arch) {
+			filtered = append(filtered, syscall)
+		}
+	}
+
+	return filtered
+}
+
+func PrettyPrint(query string, arch string) error {
 	syscalls, err := FetchData(query)
 	if err != nil {
 		return err
@@ -83,27 +111,23 @@ func PrettyPrint(query string) error {
 	return nil
 }
 
-func GetSyscallData(opts *CLIOptions) (string, error) {
+func GetSyscallData(opts *CLIOptions) (string, string, error) {
 	arch := opts.Arch
 	syscall := opts.Syscall
 
 	// validate architecture
-	if arch != "" && arch != "x64" && arch != "x86" && arch != "arm" && arch != "arm64" {
-		return "", errors.New("invalid architecture")
-	}
-
-	query := ""
-
 	if arch != "" {
-		query = arch
-	}
-	if syscall != "" {
-		if query != "" {
-			query += " " + syscall
-		} else {
-			query = syscall
+		validArchs := []string{"x64", "x86", "arm", "arm64"}
+		valid := false
+		for _, validArch := range validArchs {
+			if arch == validArch {
+				valid = true
+				break
+			}
+		}
+		if !valid {
+			return "", "", fmt.Errorf("invalid architecture: %s", arch)
 		}
 	}
-
-	return query, nil
+	return syscall, arch, nil
 }
