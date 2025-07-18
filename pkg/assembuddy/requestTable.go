@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-// go:embed syscalls.json
+//go:embed syscalls.json
 var syscallsData []byte
 
 type Syscall struct {

@@ -43,7 +43,7 @@ func syscallData(opts *assembuddy.CLIOptions) {
 	}
 
 	if opts.PrettyPrint {
-		assembuddy.PrettyPrint(query)
+		err := assembuddy.PrettyPrint(query)
 		if err != nil {
 			log.Fatalf("Error: %v", err)
 		}
