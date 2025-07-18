@@ -37,18 +37,16 @@ func main() {
 }
 
 func syscallData(opts *assembuddy.CLIOptions) {
-	query, arch, err := assembuddy.GetSyscallData(opts)
+	url, err := assembuddy.GetSyscallData(opts)
 	if err != nil {
 		log.Fatalf("Error: %v", err)
 	}
 
 	if opts.PrettyPrint {
-		err := assembuddy.PrettyPrint(query, arch)
-		if err != nil {
-			log.Fatalf("Error: %v", err)
-		}
+		assembuddy.PrettyPrint(url)
 	} else {
-		table, err := assembuddy.FetchDataWithArch(query, arch)
+
+		table, err := assembuddy.FetchData(url)
 		if err != nil {
 			log.Fatalf("Error: %v", err)
 		}
