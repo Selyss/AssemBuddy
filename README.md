@@ -12,9 +12,6 @@ Command line tool for querying assembly information. Works fully offline.
 - Query a list of all syscalls for a specific architecture
 - Pretty print JSON result
 
-## Requirements
-
-- Internet access for calling the api (offline mode is a WIP)
 
 ## Installation
 
