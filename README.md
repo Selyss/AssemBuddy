@@ -1,9 +1,9 @@
 # AssemBuddy
-Command line tool for querying assembly information. Big thanks to [syscall.sh](https://syscall.sh/) for such an awesome API.
+Command line tool for querying assembly information. Works fully offline.
 
 ![demo](https://github.com/Selyss/AssemBuddy/assets/99344963/987e16a2-ce27-4c27-b360-6327232882e2)
 
-## ✨ Features
+## Features
 
 - All query results are printed in a table
 - Query results are `$PAGER` friendly
@@ -12,16 +12,16 @@ Command line tool for querying assembly information. Big thanks to [syscall.sh](
 - Query a list of all syscalls for a specific architecture
 - Pretty print JSON result
 
-## ⚡️ Requirements
+## Requirements
 
 - Internet access for calling the api (offline mode is a WIP)
 
-## 📦 Installation
+## Installation
 
 The recommended installation method is building from source \
 You can add the binary to `$PATH` to use it from anywhere on your system
 
-## ⚙️ Examples
+## Examples
 
 ### Querying a specific syscall
 
@@ -35,3 +35,5 @@ You can add the binary to `$PATH` to use it from anywhere on your system
 
 ![arch](https://github.com/Selyss/AssemBuddy/assets/99344963/d8218e8d-233a-47e0-8ff6-9269b96de6e5)
 
+
+Big thanks to [syscall.sh](https://syscall.sh/) for such an awesome API.

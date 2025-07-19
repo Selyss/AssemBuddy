@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
-	"net/http"
+	"strconv"
+	"strings"
 )
 
 type Syscall struct {
@@ -28,61 +28,62 @@ type CLIOptions struct {
 	PrettyPrint bool
 }
 
-const (
-	syscallEndpoint    = "https://api.syscall.sh/v1/syscalls"
-	conventionEndpoint = "https://api.syscall.sh/v1/conventions"
-)
+var syscalls []Syscall
+var currentArch, currentSyscall string
+
+func init() {
+	if err := json.Unmarshal(syscallsData, &syscalls); err != nil {
+		panic("Failed to load syscall data: " + err.Error())
+	}
+}
 
 func FetchData(endpointURL string) ([]Syscall, error) {
-	response, err := http.Get(endpointURL)
-	if err != nil {
-		return nil, fmt.Errorf("failed to fetch data: %w", err)
-	}
-	defer response.Body.Close()
-
-	body, err := io.ReadAll(response.Body)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read response body: %w", err)
-	}
-
-	var systemCalls []Syscall
-	err = json.Unmarshal(body, &systemCalls)
-	if err != nil {
-		return nil, fmt.Errorf("failed to unmarshal JSON: %w", err)
-	}
-
-	return systemCalls, nil
+	return filterSyscalls(), nil
 }
 
 func PrettyPrint(endpointURL string) error {
-	response, err := http.Get(endpointURL)
+	results := filterSyscalls()
+	jsonData, err := json.MarshalIndent(results, "", "  ")
 	if err != nil {
-		return fmt.Errorf("failed to fetch data: %w", err)
+		return fmt.Errorf("failed to marshal JSON: %w", err)
 	}
-	defer response.Body.Close()
-
-	body, err := io.ReadAll(response.Body)
-	if err != nil {
-		return fmt.Errorf("failed to read response body: %w", err)
-	}
-
-	fmt.Println(string(body))
-
+	fmt.Println(string(jsonData))
 	return nil
 }
 
 func GetSyscallData(opts *CLIOptions) (string, error) {
-	arch := opts.Arch
-	url := syscallEndpoint
-	// if arch is x64, x86, arm, or arm64, concat to endpointURL
-	if arch == "x64" || arch == "x86" || arch == "arm" || arch == "arm64" {
-		url += "/" + arch
-		// if arch is not empty, return error
-	} else if arch != "" {
+	if opts.Arch != "" && opts.Arch != "x64" && opts.Arch != "x86" && opts.Arch != "arm" && opts.Arch != "arm64" {
 		return "", errors.New("invalid architecture")
 	}
-	if opts.Syscall != "" {
-		url += "/" + opts.Syscall
+	// store filter options
+	currentArch = opts.Arch
+	currentSyscall = opts.Syscall
+	return "offline", nil
+}
+
+func filterSyscalls() []Syscall {
+	var results []Syscall
+	
+	for _, sc := range syscalls {
+		matchesArch := currentArch == "" || strings.EqualFold(sc.Arch, currentArch)
+		matchesSyscall := currentSyscall == ""
+		
+		if currentSyscall != "" {
+			// match name
+			if strings.EqualFold(sc.Name, currentSyscall) {
+				matchesSyscall = true
+			} else {
+				// match number
+				if nr, err := strconv.Atoi(currentSyscall); err == nil && sc.Nr == nr {
+					matchesSyscall = true
+				}
+			}
+		}
+		
+		if matchesArch && matchesSyscall {
+			results = append(results, sc)
+		}
 	}
-	return url, nil
+	
+	return results
 }
