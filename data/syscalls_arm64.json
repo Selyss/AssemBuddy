@@ -1,0 +1,32 @@
+[
+  {
+    "name": "read",
+    "number": 63,
+    "arch": "arm64",
+    "signature": "(fd, buf, count) -> ssize_t",
+    "abi": "nr=x8, arg0=x0, arg1=x1, arg2=x2, return=x0",
+    "notes": "",
+    "instr": "svc 0",
+    "since": ""
+  },
+  {
+    "name": "write",
+    "number": 64,
+    "arch": "arm64",
+    "signature": "(fd, buf, count) -> ssize_t",
+    "abi": "nr=x8, arg0=x0, arg1=x1, arg2=x2, return=x0",
+    "notes": "",
+    "instr": "svc 0",
+    "since": ""
+  },
+  {
+    "name": "exit",
+    "number": 93,
+    "arch": "arm64",
+    "signature": "(status) -> noreturn",
+    "abi": "nr=x8, arg0=x0, return=none",
+    "notes": "",
+    "instr": "svc 0",
+    "since": ""
+  }
+]

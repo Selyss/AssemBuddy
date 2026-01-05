@@ -1,0 +1,32 @@
+[
+  {
+    "name": "read",
+    "number": 0,
+    "arch": "x64",
+    "signature": "(fd, buf, count) -> ssize_t",
+    "abi": "nr=rax, arg0=rdi, arg1=rsi, arg2=rdx, return=rax",
+    "notes": "",
+    "instr": "syscall",
+    "since": ""
+  },
+  {
+    "name": "write",
+    "number": 1,
+    "arch": "x64",
+    "signature": "(fd, buf, count) -> ssize_t",
+    "abi": "nr=rax, arg0=rdi, arg1=rsi, arg2=rdx, return=rax",
+    "notes": "",
+    "instr": "syscall",
+    "since": ""
+  },
+  {
+    "name": "exit",
+    "number": 60,
+    "arch": "x64",
+    "signature": "(status) -> noreturn",
+    "abi": "nr=rax, arg0=rdi, return=none",
+    "notes": "",
+    "instr": "syscall",
+    "since": ""
+  }
+]

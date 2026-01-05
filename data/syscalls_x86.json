@@ -1,0 +1,32 @@
+[
+  {
+    "name": "read",
+    "number": 3,
+    "arch": "x86",
+    "signature": "(fd, buf, count) -> ssize_t",
+    "abi": "nr=eax, arg0=ebx, arg1=ecx, arg2=edx, return=eax",
+    "notes": "",
+    "instr": "int 0x80",
+    "since": ""
+  },
+  {
+    "name": "write",
+    "number": 4,
+    "arch": "x86",
+    "signature": "(fd, buf, count) -> ssize_t",
+    "abi": "nr=eax, arg0=ebx, arg1=ecx, arg2=edx, return=eax",
+    "notes": "",
+    "instr": "int 0x80",
+    "since": ""
+  },
+  {
+    "name": "exit",
+    "number": 1,
+    "arch": "x86",
+    "signature": "(status) -> noreturn",
+    "abi": "nr=eax, arg0=ebx, return=none",
+    "notes": "",
+    "instr": "int 0x80",
+    "since": ""
+  }
+]

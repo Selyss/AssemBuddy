@@ -1,0 +1,13 @@
+{
+  "schema_version": "1",
+  "dataset_version": "2024-01-01",
+  "generated_at": "2024-01-01T00:00:00Z",
+  "architectures": ["arm", "arm64", "x64", "x86"],
+  "record_count_by_arch": {
+    "arm": 3,
+    "arm64": 3,
+    "x64": 3,
+    "x86": 3
+  },
+  "source_notes": "Data sourced from api.syscall.sh"
+}
