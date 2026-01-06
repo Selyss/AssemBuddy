@@ -1,0 +1,41 @@
+[
+  {
+    "arch": "x86",
+    "nr": 3,
+    "name": "read",
+    "references": "",
+    "return": "ssize_t",
+    "arg0": "unsigned int fd",
+    "arg1": "char *buf",
+    "arg2": "size_t count",
+    "arg3": "",
+    "arg4": "",
+    "arg5": ""
+  },
+  {
+    "arch": "x86",
+    "nr": 4,
+    "name": "write",
+    "references": "",
+    "return": "ssize_t",
+    "arg0": "unsigned int fd",
+    "arg1": "const char *buf",
+    "arg2": "size_t count",
+    "arg3": "",
+    "arg4": "",
+    "arg5": ""
+  },
+  {
+    "arch": "x86",
+    "nr": 1,
+    "name": "exit",
+    "references": "",
+    "return": "noreturn",
+    "arg0": "int status",
+    "arg1": "",
+    "arg2": "",
+    "arg3": "",
+    "arg4": "",
+    "arg5": ""
+  }
+]
