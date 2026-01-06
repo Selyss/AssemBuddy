@@ -1,32 +1,41 @@
 [
   {
+    "arch": "x64",
+    "nr": 0,
     "name": "read",
-    "number": 0,
-    "arch": "x64",
-    "signature": "(fd, buf, count) -> ssize_t",
-    "abi": "nr=rax, arg0=rdi, arg1=rsi, arg2=rdx, return=rax",
-    "notes": "",
-    "instr": "syscall",
-    "since": ""
+    "references": "",
+    "return": "ssize_t",
+    "arg0": "unsigned int fd",
+    "arg1": "char *buf",
+    "arg2": "size_t count",
+    "arg3": "",
+    "arg4": "",
+    "arg5": ""
   },
   {
+    "arch": "x64",
+    "nr": 1,
     "name": "write",
-    "number": 1,
-    "arch": "x64",
-    "signature": "(fd, buf, count) -> ssize_t",
-    "abi": "nr=rax, arg0=rdi, arg1=rsi, arg2=rdx, return=rax",
-    "notes": "",
-    "instr": "syscall",
-    "since": ""
+    "references": "",
+    "return": "ssize_t",
+    "arg0": "unsigned int fd",
+    "arg1": "const char *buf",
+    "arg2": "size_t count",
+    "arg3": "",
+    "arg4": "",
+    "arg5": ""
   },
   {
-    "name": "exit",
-    "number": 60,
     "arch": "x64",
-    "signature": "(status) -> noreturn",
-    "abi": "nr=rax, arg0=rdi, return=none",
-    "notes": "",
-    "instr": "syscall",
-    "since": ""
+    "nr": 60,
+    "name": "exit",
+    "references": "",
+    "return": "noreturn",
+    "arg0": "int status",
+    "arg1": "",
+    "arg2": "",
+    "arg3": "",
+    "arg4": "",
+    "arg5": ""
   }
 ]

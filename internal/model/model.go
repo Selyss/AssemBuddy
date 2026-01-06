@@ -21,14 +21,17 @@ var CanonicalArchSet = map[Arch]struct{}{
 }
 
 type SyscallRecord struct {
-	Name      string `json:"name"`
-	Number    int    `json:"number"`
-	Arch      string `json:"arch"`
-	Signature string `json:"signature,omitempty"`
-	ABI       string `json:"abi,omitempty"`
-	Notes     string `json:"notes,omitempty"`
-	Instr     string `json:"instr,omitempty"`
-	Since     string `json:"since,omitempty"`
+	Arch       string `json:"arch"`
+	Number     int    `json:"nr"`
+	Name       string `json:"name"`
+	References string `json:"references,omitempty"`
+	Return     string `json:"return,omitempty"`
+	Arg0       string `json:"arg0,omitempty"`
+	Arg1       string `json:"arg1,omitempty"`
+	Arg2       string `json:"arg2,omitempty"`
+	Arg3       string `json:"arg3,omitempty"`
+	Arg4       string `json:"arg4,omitempty"`
+	Arg5       string `json:"arg5,omitempty"`
 }
 
 type Meta struct {

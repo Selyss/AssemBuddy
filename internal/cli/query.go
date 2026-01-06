@@ -62,9 +62,21 @@ func newQueryCommand(app *App) *cobra.Command {
 			}
 			if cols == nil {
 				if allArch {
-					cols = []render.ColumnKey{render.ColumnArch, render.ColumnNumber, render.ColumnName}
+					cols = []render.ColumnKey{render.ColumnArch, render.ColumnNR, render.ColumnName}
 				} else {
-					cols = []render.ColumnKey{render.ColumnArch, render.ColumnName, render.ColumnNumber}
+					cols = []render.ColumnKey{
+						render.ColumnArch,
+						render.ColumnName,
+						render.ColumnNR,
+						render.ColumnReturn,
+						render.ColumnArg0,
+						render.ColumnArg1,
+						render.ColumnArg2,
+						render.ColumnArg3,
+						render.ColumnArg4,
+						render.ColumnArg5,
+						render.ColumnReferences,
+					}
 				}
 			}
 

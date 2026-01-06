@@ -35,18 +35,6 @@ type apiSyscall struct {
 	References string `json:"references"`
 }
 
-type apiConvention struct {
-	Arch       string `json:"arch"`
-	Arg0       string `json:"arg0"`
-	Arg1       string `json:"arg1"`
-	Arg2       string `json:"arg2"`
-	Arg3       string `json:"arg3"`
-	Arg4       string `json:"arg4"`
-	Arg5       string `json:"arg5"`
-	Number     string `json:"nr"`
-	ReturnType string `json:"return"`
-}
-
 func GenerateDataset(opts Options) (*model.Meta, error) {
 	arches, err := resolveArches(opts.Arches)
 	if err != nil {
@@ -65,11 +53,11 @@ func GenerateDataset(opts Options) (*model.Meta, error) {
 
 	counts := make(map[string]int)
 	for _, arch := range arches {
-		syscalls, conv, err := fetchArch(opts.APIBase, arch)
+		syscalls, err := fetchArch(opts.APIBase, arch)
 		if err != nil {
 			return nil, err
 		}
-		records := transformRecords(syscalls, conv)
+		records := transformRecords(syscalls)
 		counts[string(arch)] = len(records)
 
 		filename := filepath.Join(opts.OutDir, fmt.Sprintf("syscalls_%s.json", arch))
@@ -112,19 +100,14 @@ func resolveArches(arches []string) ([]model.Arch, error) {
 	return result, nil
 }
 
-func fetchArch(apiBase string, arch model.Arch) ([]apiSyscall, apiConvention, error) {
+func fetchArch(apiBase string, arch model.Arch) ([]apiSyscall, error) {
 	syscallsURL := fmt.Sprintf("%s/syscalls/%s", strings.TrimRight(apiBase, "/"), arch)
-	convURL := fmt.Sprintf("%s/conventions/%s", strings.TrimRight(apiBase, "/"), arch)
 
 	var syscalls []apiSyscall
 	if err := getJSON(syscallsURL, &syscalls); err != nil {
-		return nil, apiConvention{}, err
+		return nil, err
 	}
-	var convention apiConvention
-	if err := getJSON(convURL, &convention); err != nil {
-		return nil, apiConvention{}, err
-	}
-	return syscalls, convention, nil
+	return syscalls, nil
 }
 
 func getJSON(url string, target interface{}) error {
@@ -144,18 +127,21 @@ func getJSON(url string, target interface{}) error {
 	return nil
 }
 
-func transformRecords(syscalls []apiSyscall, conv apiConvention) []model.SyscallRecord {
+func transformRecords(syscalls []apiSyscall) []model.SyscallRecord {
 	records := make([]model.SyscallRecord, 0, len(syscalls))
 	for _, call := range syscalls {
 		records = append(records, model.SyscallRecord{
-			Name:      call.Name,
-			Number:    call.Number,
-			Arch:      normalizeArch(call.Arch),
-			Signature: buildSignature(call),
-			ABI:       buildABI(conv),
-			Notes:     call.References,
-			Instr:     "",
-			Since:     "",
+			Arch:       normalizeArch(call.Arch),
+			Number:     call.Number,
+			Name:       call.Name,
+			References: call.References,
+			Return:     call.ReturnType,
+			Arg0:       call.Arg0,
+			Arg1:       call.Arg1,
+			Arg2:       call.Arg2,
+			Arg3:       call.Arg3,
+			Arg4:       call.Arg4,
+			Arg5:       call.Arg5,
 		})
 	}
 	return records
@@ -167,48 +153,6 @@ func normalizeArch(arch string) string {
 		return arch
 	}
 	return string(parsed)
-}
-
-func buildSignature(call apiSyscall) string {
-	args := collectArgs(call.Arg0, call.Arg1, call.Arg2, call.Arg3, call.Arg4, call.Arg5)
-	return formatSignature(args, call.ReturnType)
-}
-
-func buildABI(conv apiConvention) string {
-	parts := []string{}
-	if conv.Number != "" {
-		parts = append(parts, fmt.Sprintf("nr=%s", conv.Number))
-	}
-	args := []string{conv.Arg0, conv.Arg1, conv.Arg2, conv.Arg3, conv.Arg4, conv.Arg5}
-	for idx, arg := range args {
-		if arg == "" {
-			continue
-		}
-		parts = append(parts, fmt.Sprintf("arg%d=%s", idx, arg))
-	}
-	if conv.ReturnType != "" {
-		parts = append(parts, fmt.Sprintf("return=%s", conv.ReturnType))
-	}
-	return strings.Join(parts, ", ")
-}
-
-func collectArgs(args ...string) []string {
-	out := make([]string, 0, len(args))
-	for _, arg := range args {
-		if strings.TrimSpace(arg) == "" {
-			continue
-		}
-		out = append(out, strings.TrimSpace(arg))
-	}
-	return out
-}
-
-func formatSignature(args []string, ret string) string {
-	argStr := strings.Join(args, ", ")
-	if ret == "" {
-		return fmt.Sprintf("(%s)", argStr)
-	}
-	return fmt.Sprintf("(%s) -> %s", argStr, strings.TrimSpace(ret))
 }
 
 func writeJSON(path string, payload interface{}, overwrite bool) error {

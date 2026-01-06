@@ -33,6 +33,9 @@ func shouldUsePager(lines int, height int, format string, noPager bool, isTTY bo
 }
 
 func OutputWithPager(output string, format string, noPager bool) error {
+	if format != "json" && !strings.HasSuffix(output, "\n") {
+		output += "\n"
+	}
 	if !UsePager(output, format, noPager) {
 		fmt.Fprint(os.Stdout, output)
 		return nil

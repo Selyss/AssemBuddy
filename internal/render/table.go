@@ -41,7 +41,7 @@ func columnConfigs(columns []ColumnKey) []table.ColumnConfig {
 	configs := make([]table.ColumnConfig, 0, len(columns))
 	for idx, col := range columns {
 		config := table.ColumnConfig{Number: idx + 1, Align: text.AlignLeft}
-		if col == ColumnNumber {
+		if col == ColumnNR {
 			config.Align = text.AlignRight
 		}
 		configs = append(configs, config)
@@ -55,18 +55,24 @@ func columnValue(rec model.SyscallRecord, col ColumnKey) string {
 		return rec.Arch
 	case ColumnName:
 		return rec.Name
-	case ColumnNumber:
+	case ColumnNR:
 		return fmt.Sprintf("%d", rec.Number)
-	case ColumnABI:
-		return rec.ABI
-	case ColumnInstr:
-		return rec.Instr
-	case ColumnSignature:
-		return rec.Signature
-	case ColumnNotes:
-		return rec.Notes
-	case ColumnSince:
-		return rec.Since
+	case ColumnReturn:
+		return rec.Return
+	case ColumnReferences:
+		return rec.References
+	case ColumnArg0:
+		return rec.Arg0
+	case ColumnArg1:
+		return rec.Arg1
+	case ColumnArg2:
+		return rec.Arg2
+	case ColumnArg3:
+		return rec.Arg3
+	case ColumnArg4:
+		return rec.Arg4
+	case ColumnArg5:
+		return rec.Arg5
 	default:
 		return ""
 	}

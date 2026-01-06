@@ -8,25 +8,31 @@ import (
 type ColumnKey string
 
 const (
-	ColumnArch      ColumnKey = "arch"
-	ColumnName      ColumnKey = "name"
-	ColumnNumber    ColumnKey = "number"
-	ColumnABI       ColumnKey = "abi"
-	ColumnInstr     ColumnKey = "instr"
-	ColumnSignature ColumnKey = "signature"
-	ColumnNotes     ColumnKey = "notes"
-	ColumnSince     ColumnKey = "since"
+	ColumnArch       ColumnKey = "arch"
+	ColumnNR         ColumnKey = "nr"
+	ColumnName       ColumnKey = "name"
+	ColumnReturn     ColumnKey = "return"
+	ColumnReferences ColumnKey = "references"
+	ColumnArg0       ColumnKey = "arg0"
+	ColumnArg1       ColumnKey = "arg1"
+	ColumnArg2       ColumnKey = "arg2"
+	ColumnArg3       ColumnKey = "arg3"
+	ColumnArg4       ColumnKey = "arg4"
+	ColumnArg5       ColumnKey = "arg5"
 )
 
 var ValidColumns = map[ColumnKey]struct{}{
-	ColumnArch:      {},
-	ColumnName:      {},
-	ColumnNumber:    {},
-	ColumnABI:       {},
-	ColumnInstr:     {},
-	ColumnSignature: {},
-	ColumnNotes:     {},
-	ColumnSince:     {},
+	ColumnArch:       {},
+	ColumnNR:         {},
+	ColumnName:       {},
+	ColumnReturn:     {},
+	ColumnReferences: {},
+	ColumnArg0:       {},
+	ColumnArg1:       {},
+	ColumnArg2:       {},
+	ColumnArg3:       {},
+	ColumnArg4:       {},
+	ColumnArg5:       {},
 }
 
 func ParseColumns(input string) ([]ColumnKey, error) {

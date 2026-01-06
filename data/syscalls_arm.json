@@ -1,32 +1,41 @@
 [
   {
+    "arch": "arm",
+    "nr": 3,
     "name": "read",
-    "number": 3,
-    "arch": "arm",
-    "signature": "(fd, buf, count) -> ssize_t",
-    "abi": "nr=r7, arg0=r0, arg1=r1, arg2=r2, return=r0",
-    "notes": "",
-    "instr": "svc 0",
-    "since": ""
+    "references": "",
+    "return": "ssize_t",
+    "arg0": "unsigned int fd",
+    "arg1": "char *buf",
+    "arg2": "size_t count",
+    "arg3": "",
+    "arg4": "",
+    "arg5": ""
   },
   {
+    "arch": "arm",
+    "nr": 4,
     "name": "write",
-    "number": 4,
-    "arch": "arm",
-    "signature": "(fd, buf, count) -> ssize_t",
-    "abi": "nr=r7, arg0=r0, arg1=r1, arg2=r2, return=r0",
-    "notes": "",
-    "instr": "svc 0",
-    "since": ""
+    "references": "",
+    "return": "ssize_t",
+    "arg0": "unsigned int fd",
+    "arg1": "const char *buf",
+    "arg2": "size_t count",
+    "arg3": "",
+    "arg4": "",
+    "arg5": ""
   },
   {
-    "name": "exit",
-    "number": 1,
     "arch": "arm",
-    "signature": "(status) -> noreturn",
-    "abi": "nr=r7, arg0=r0, return=none",
-    "notes": "",
-    "instr": "svc 0",
-    "since": ""
+    "nr": 1,
+    "name": "exit",
+    "references": "",
+    "return": "noreturn",
+    "arg0": "int status",
+    "arg1": "",
+    "arg2": "",
+    "arg3": "",
+    "arg4": "",
+    "arg5": ""
   }
 ]

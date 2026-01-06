@@ -16,10 +16,10 @@ func TestParseColumnsInvalid(t *testing.T) {
 
 func TestTableColumnOrder(t *testing.T) {
 	records := []model.SyscallRecord{{Name: "read", Number: 0, Arch: "x64"}}
-	cols := []ColumnKey{ColumnNumber, ColumnName, ColumnArch}
+	cols := []ColumnKey{ColumnNR, ColumnName, ColumnArch}
 	output := RenderTable(records, cols, 0)
 
-	idxNumber := strings.Index(output, "NUMBER")
+	idxNumber := strings.Index(output, "NR")
 	idxName := strings.Index(output, "NAME")
 	idxArch := strings.Index(output, "ARCH")
 	if idxNumber == -1 || idxName == -1 || idxArch == -1 {
@@ -36,7 +36,7 @@ func TestJSONOutput(t *testing.T) {
 	if err != nil {
 		t.Fatalf("json render failed: %v", err)
 	}
-	if !strings.Contains(payload, "\"name\"") {
+	if !strings.Contains(payload, "\"nr\"") {
 		t.Fatalf("expected json output")
 	}
 }

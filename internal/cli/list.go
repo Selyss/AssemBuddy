@@ -39,7 +39,7 @@ func newListCommand(app *App) *cobra.Command {
 				return usageError(err)
 			}
 			if cols == nil {
-				cols = []render.ColumnKey{render.ColumnNumber, render.ColumnName}
+				cols = []render.ColumnKey{render.ColumnNR, render.ColumnName}
 			}
 
 			format := strings.ToLower(app.Config.Format)
